@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "583912075544",
+    "firebase_url": "https://smallworld3d-2ac88.firebaseio.com",
+    "project_id": "smallworld3d-2ac88",
+    "storage_bucket": "smallworld3d-2ac88.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:583912075544:android:c29b5b25e6abd014",
+        "android_client_info": {
+          "package_name": "com.born2go.smallworld"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "583912075544-9igndrhcq10rtpqv1fi5g3eti06deh34.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCtG2Ta7RUB0Vt0GjH6sTkNNDNyuISXrto"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
