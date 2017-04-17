@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-#if !UNITY_WEBGL // If the Ads service is not enabled...
+#if UNITY_ADS // If the Ads service is not enabled...
 using UnityEngine.Advertisements;
 #endif
 
@@ -10,15 +10,14 @@ public class AdsController : MonoBehaviour {
     public string gameId = "1224976"; // Set this value from the inspector.
     public bool enableTestMode = false;
 
-#if !UNITY_WEBGL // 
+#if UNITY_ADS // If the Ads service is not enabled...
+
     IEnumerator Start()
     {
-#if !UNITY_ADS // If the Ads service is not enabled...
         if (Advertisement.isSupported)
         { // If runtime platform is supported...
             Advertisement.Initialize(gameId, enableTestMode); // ...initialize.
         }
-#endif
 
         // Wait until Unity Ads is initialized,
         //  and the default ad placement is ready.
