@@ -1,0 +1,9 @@
+lastUpgrade=00936
+proj.pluginVersion=0.9.36
+ios.ClientId=583912075544-ghjh46gqq3b3ercfte26qh546dbbt39b.apps.googleusercontent.com
+ios.BundleId=com.born2go.smallworld
+proj.ConstantsClassName=GPGSIds
+ios.ResourceData=%23define+CLIENT_ID+%40%22583912075544-ghjh46gqq3b3ercfte26qh546dbbt39b.apps.googleusercontent.com%22%0a%23define+BUNDLE_ID+%40%22com.born2go.smallworld%22%0a%23define+ACH_WELCOME+%40%22CgkImOL8nv8QEAIQAA%22
+and.ClientId=583912075544-9igndrhcq10rtpqv1fi5g3eti06deh34.apps.googleusercontent.com
+proj.requireGPlus=true
+ios.SetupDone=true
