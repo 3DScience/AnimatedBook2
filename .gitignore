@@ -1,6 +1,6 @@
 AssetBundles/
 Build/
-Library/
+#Library/
 Assets/AssetBundleSample
 Assets/BookAssetBunbleTest/Kitten
 Temp/
