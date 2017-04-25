@@ -69,11 +69,13 @@ namespace isotope
 			if( child )
 			{
 				// check as child
+				Debug.Log ("CheckParentSetting 1: as child");
 				if( 0 <= data.ParentNo && data.ParentNo < this._assetBundleData.assetbundles.Count )
 					return !this._assetBundleData.assetbundles[data.ParentNo].Separated;
 			}
 			else
 			{
+				Debug.Log ("CheckParentSetting 2: check as parent");
 				// check as parent
 				if( data.Separated )
 				{
@@ -367,10 +369,13 @@ namespace isotope
 		// Select assetBundle and create editor window.
 		void SelectAssetBundle(int no)
 		{
+			Debug.Log("SelectAssetBundle 1");
 			if (no < this._assetBundleData.assetbundles.Count)
 			{
+				Debug.Log("SelectAssetBundle 1.1");
 				if (this._assetbundleWindow == null)
 				{
+					Debug.Log("SelectAssetBundle 1.2");
 					/*this._assetbundleWindow = AssetBundleWindow.CreateInstance<AssetBundleWindow>();
 					this._assetbundleWindow.ShowUtility();
 					this._assetbundleWindow.position =
@@ -383,6 +388,7 @@ namespace isotope
 			}
 			else
 			{
+				Debug.Log("SelectAssetBundle 2");
 				//this._assetbundleWindow.ShowUtility();// if window don't open, throw NullReferenceException with Close()...
 				//this._assetbundleWindow.Close();
 				if (this._assetbundleWindow)
@@ -410,6 +416,7 @@ namespace isotope
 
         static void CreateAssetBundleWithDependency( AssetBundleManageData data,int no, bool rebuild )
 		{
+			Debug.Log ("CreateAssetBundleWithDependency 1");
 			var bundles = data.assetbundles;
             List<string> filesToDelete = new List<string>();
             var assetbundle = bundles[no];//Main assetbundle need to be built
@@ -861,10 +868,32 @@ namespace isotope
 				{
 					var dc = content;// as DirectoryContent;
 					var files = System.IO.Directory.GetFiles( dc.Directory, dc.Pattern );
-					if( 0 < files.Length )
+					var folders = System.IO.Directory.GetDirectories( dc.Directory, dc.Pattern );
+					var selectionFolder = Selection.objects;
+
+					if( 0 < files.Length ) { // if num files > 0 then get all file in fonder
 						Selection.objects = System.Array.ConvertAll( files, file => AssetDatabase.LoadAssetAtPath( file, typeof( Object ) ) );
-					else
+						Debug.Log("OnEnable num file : " + Selection.objects.Length);
+					} else {
 						Selection.activeObject = AssetDatabase.LoadAssetAtPath( dc.Directory, typeof( Object ) );
+					}
+
+					if( 0 < folders.Length ) {	// if num folder > 0 then get all child folder in parrent folder 
+						selectionFolder = System.Array.ConvertAll( folders, folder => AssetDatabase.LoadAssetAtPath( folder, typeof( Object ) ) );
+						Debug.Log("OnEnable num folders: " + selectionFolder.Length);
+
+						for(int i = 0; i < folders.Length; i++) {	// get all files in every child folder
+							Debug.Log("OnEnable num folders name " + i + " : " + selectionFolder[i].name);
+							var files1 = System.IO.Directory.GetFiles( dc.Directory + "/" + selectionFolder[i].name, dc.Pattern );
+							if( 0 < files1.Length ) {
+								Selection.objects = System.Array.ConvertAll( files1, file1 => AssetDatabase.LoadAssetAtPath( file1, typeof( Object ) ) );
+								Debug.Log("OnEnable num file " + i + " : " + Selection.objects.Length);
+							} else {
+								Selection.activeObject = AssetDatabase.LoadAssetAtPath( dc.Directory, typeof( Object ) );
+							}
+						}
+					}
+
 				}
 			};
 			this._listbox.OnDeleteItem += (list, no) =>
@@ -993,6 +1022,7 @@ namespace isotope
 			if (me <= idx)
 				--idx;
 			EditorGUI.BeginChangeCheck();
+			Debug.Log ("Parent assetbundle 1");
 			idx = EditorGUILayout.Popup(new GUIContent("Parent assetbundle"), idx, list.ToArray());
 			if (EditorGUI.EndChangeCheck())
 			{
