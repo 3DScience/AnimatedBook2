@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 using Ionic.Zip;
+using System.Collections;
 
 // ignore warning of using Unity4 Assetbundle system
 #pragma warning disable 618
@@ -690,6 +691,7 @@ namespace isotope
                 return;
             }
             // add all path to list
+			Debug.Log("GetAllContents: " + assetbundle.GetAllContents().Count);
             List<string> files = new List<string>();
             foreach (var path in assetbundle.GetAllContentsPath())
             {
@@ -853,46 +855,79 @@ namespace isotope
 		void OnEnable()
 		{
 			// list event
-			this._listbox.OnSelectionChange += (list, prev) =>
-			{
+			this._listbox.OnSelectionChange += (list, prev) => {
 				// get focus from "Pattern TextField" for updating TextField.
-				EditorGUI.FocusTextInControl("List");
+				EditorGUI.FocusTextInControl ("List");
 				// Select asset at "Project window".
-				var content = this._data.GetContent(list.SelectNo);
-				if( content.Type == iContent.Types.File )
-				{
-					if( !Selection.activeObject || content.Name != Selection.activeObject.name )
-						Selection.activeObject = AssetDatabase.LoadAssetAtPath( content.Name, typeof( Object ) );
-				}
-				else if( content.Type == iContent.Types.Directory )
-				{
+				var content = this._data.GetContent (list.SelectNo);
+				Debug.Log ("OnEnable content: " + this._data.GetContent (list.SelectNo).Name);
+				Debug.Log ("OnEnable iContent: " + iContent.Types.Directory);
+				if (content.Type == iContent.Types.File) {
+					if (!Selection.activeObject || content.Name != Selection.activeObject.name)
+						Selection.activeObject = AssetDatabase.LoadAssetAtPath (content.Name, typeof(Object));
+				} else if (content.Type == iContent.Types.Directory) {
 					var dc = content;// as DirectoryContent;
-					var files = System.IO.Directory.GetFiles( dc.Directory, dc.Pattern );
-					var folders = System.IO.Directory.GetDirectories( dc.Directory, dc.Pattern );
+					var files = System.IO.Directory.GetFiles (dc.Directory, dc.Pattern);
+					var folders = System.IO.Directory.GetDirectories (dc.Directory, dc.Pattern);
 					var selectionFolder = Selection.objects;
 
-					if( 0 < files.Length ) { // if num files > 0 then get all file in fonder
+					Debug.Log ("file Length: " + files.Length);
+					if( 0 < files.Length ) { // if num files > 0 then get all file in folder
 						Selection.objects = System.Array.ConvertAll( files, file => AssetDatabase.LoadAssetAtPath( file, typeof( Object ) ) );
 						Debug.Log("OnEnable num file : " + Selection.objects.Length);
 					} else {
 						Selection.activeObject = AssetDatabase.LoadAssetAtPath( dc.Directory, typeof( Object ) );
 					}
+		
+//					// begin add folder
+//					if( 0 < folders.Length ) {	// if num folder > 0 then get all child folder in parrent folder 
+//						selectionFolder = System.Array.ConvertAll( folders, folder => AssetDatabase.LoadAssetAtPath( folder, typeof( Object ) ) );
+//						Debug.Log("OnEnable num folders: " + selectionFolder.Length);
+//
+//						List<UnityEngine.Object> listFiles = new List<UnityEngine.Object>();
+//						for(int i = 0; i < folders.Length; i++) {	// get all files, folder in every child folder
+//							Debug.Log("OnEnable num folders name " + i + " : " + selectionFolder[i].name);
+//							this._data.AddFile(dc.Directory + "/" + selectionFolder[i].name);
+//							Debug.Log("OnEnable content added: " + this._data.GetContent(1).Name);
+//
+//							// get all files in every child folder
+//							//files = System.IO.Directory.GetFiles( dc.Directory + "/" + selectionFolder[i].name, dc.Pattern );
+//							files = System.IO.Directory.GetFiles( dc.Directory, dc.Pattern );
+//		
+//							if( 0 < files.Length ) {
+//								listFiles.AddRange(System.Array.ConvertAll( files, file => AssetDatabase.LoadAssetAtPath( file, typeof( Object ) ) ));
+//							} else {
+//								Selection.activeObject = AssetDatabase.LoadAssetAtPath( dc.Directory + "/" + selectionFolder[i].name, typeof( Object ) );
+//							}
+//
+//							// get all files, folder in every child folder of folders_child
+////							var folders_child = System.IO.Directory.GetDirectories( dc.Directory + "/" + selectionFolder[i].name, dc.Pattern );
+////							if( 0 < folders_child.Length ) {
+////								for(int n = 0; n < folders_child.Length; n++) {
+////									Debug.Log("OnEnable num folders_child name " + i + " : " + selectionFolder[i].name); 
+////								}
+////							}
+//						}
+//						Selection.objects = listFiles.ToArray();
+//						Debug.Log("OnEnable num file 1: " + Selection.objects.Length);
+//
+//					}
+//					// end add folder
 
-					if( 0 < folders.Length ) {	// if num folder > 0 then get all child folder in parrent folder 
-						selectionFolder = System.Array.ConvertAll( folders, folder => AssetDatabase.LoadAssetAtPath( folder, typeof( Object ) ) );
-						Debug.Log("OnEnable num folders: " + selectionFolder.Length);
 
-						for(int i = 0; i < folders.Length; i++) {	// get all files in every child folder
-							Debug.Log("OnEnable num folders name " + i + " : " + selectionFolder[i].name);
-							var files1 = System.IO.Directory.GetFiles( dc.Directory + "/" + selectionFolder[i].name, dc.Pattern );
-							if( 0 < files1.Length ) {
-								Selection.objects = System.Array.ConvertAll( files1, file1 => AssetDatabase.LoadAssetAtPath( file1, typeof( Object ) ) );
-								Debug.Log("OnEnable num file " + i + " : " + Selection.objects.Length);
-							} else {
-								Selection.activeObject = AssetDatabase.LoadAssetAtPath( dc.Directory, typeof( Object ) );
-							}
-						}
-					}
+//					// begin add folder
+//					if (0 < folders.Length) {	// if num folder > 0 then get all child folder in parrent folder 
+//						selectionFolder = System.Array.ConvertAll (folders, folder => AssetDatabase.LoadAssetAtPath (folder, typeof(Object)));
+//						Debug.Log ("OnEnable num folders: " + selectionFolder.Length);
+//
+//						List<UnityEngine.Object> listFiles = new List<UnityEngine.Object> ();
+//						for (int i = 0; i < folders.Length; i++) {	// get all files, folder in every child folder
+//							Debug.Log ("OnEnable num folders name " + i + " : " + selectionFolder [i].name);
+//							this._data.AddFile (dc.Directory + "/" + selectionFolder [i].name + "/*.*");
+//						}
+//					}
+//					// end add folder
+
 
 				}
 			};
@@ -907,6 +942,11 @@ namespace isotope
 				}
 			};
 		}
+
+		void AddFileInFolderToBuildAsset() {
+		}
+
+
 		void OnGUI()
 		{
 			switch (Event.current.type)

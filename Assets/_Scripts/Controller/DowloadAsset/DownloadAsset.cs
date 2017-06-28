@@ -76,7 +76,7 @@ public class DownloadAsset : MonoBehaviour {
 
         txtMsg.text = "Downloading contents.";
 		url = GlobalVar.BASE_ASSET_DOWNLOAD_URL + bookInfo.download_url + "/" + bookInfo.assetbundle + "_" + platform + ".zip";
-        if (GlobalVar.DEBUG)
+        //if (GlobalVar.DEBUG)
             DebugOnScreen.Log("url 1 =" + url);
         startDownload();
     }
@@ -210,7 +210,7 @@ public class DownloadAsset : MonoBehaviour {
 
 				url = GlobalVar.BASE_ASSET_DOWNLOAD_URL + dependencyBook.download_url + "/" + dependencyBook.assetbundle + "_" + platform + ".zip";
 				//url = GlobalVar.BASE_ASSET_DOWNLOAD_URL + dependencyBook.download_url + "/" + platform + ".zip";
-                if (GlobalVar.DEBUG)
+                //if (GlobalVar.DEBUG)
                     DebugOnScreen.Log("url 2=" + url);
                 www = new WWW(url);
                 currentDownloadDependencyIdx++;
@@ -232,13 +232,13 @@ public class DownloadAsset : MonoBehaviour {
 			platform = "iOS";
         }
         bool r= File.Exists(assetDataFolder +platform+"/"+ abname);
-        //DebugOnScreen.Log("checking exist ab name " + assetDataFolder + platform + "/" + abname+". Result=" +r);
+        DebugOnScreen.Log("checking exist ab name " + assetDataFolder + platform + "/" + abname+". Result=" +r);
         return false;
     }
     IEnumerator saveFileToLocal()
     {
-        //if (Debug.isDebugBuild)
-        //Debug.Log("persistentDataPath=" + Application.persistentDataPath);
+        if (Debug.isDebugBuild)
+        Debug.Log("persistentDataPath=" + Application.persistentDataPath);
         string zipFile="";
     
         barBehaviour.m_AttachedText.text = "Saving...";
