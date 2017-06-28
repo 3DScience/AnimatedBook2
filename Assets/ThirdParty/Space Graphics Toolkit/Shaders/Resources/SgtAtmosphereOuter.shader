@@ -1,3 +1,5 @@
+// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
 // Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
 
 Shader "Hidden/SgtAtmosphereOuter"
@@ -127,7 +129,7 @@ Shader "Hidden/SgtAtmosphereOuter"
 					float horizon = depth * _HorizonLengthRecip;
 					float density = pow(horizon, _Power);
 
-					o.vertex        = mul(UNITY_MATRIX_MVP, i.vertex);
+					o.vertex        = UnityObjectToClipPos(i.vertex);
 					o.texcoord0     = horizon * _AtmosphereScale;
 					o.texcoord1.xyz = 1.0f;
 					o.texcoord1.w   = density;

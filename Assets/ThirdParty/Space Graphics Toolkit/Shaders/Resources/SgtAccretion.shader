@@ -1,3 +1,5 @@
+// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
 // Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
 
 Shader "Hidden/SgtAccretion"
@@ -95,7 +97,7 @@ Shader "Hidden/SgtAccretion"
 				{
 					float4 wPos = mul(unity_ObjectToWorld, i.vertex);
 
-					o.vertex       = mul(UNITY_MATRIX_MVP, i.vertex);
+					o.vertex       = UnityObjectToClipPos(i.vertex);
 					o.texcoord0.xy = i.texcoord0;
 					o.texcoord0.z  = i.texcoord1;
 					o.texcoord1    = 1.0f;

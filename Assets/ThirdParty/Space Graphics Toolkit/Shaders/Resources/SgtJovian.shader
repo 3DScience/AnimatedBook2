@@ -1,3 +1,5 @@
+// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
 // Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
 
 Shader "Hidden/SgtJovian"
@@ -126,7 +128,7 @@ Shader "Hidden/SgtJovian"
 #else
 					density = saturate(density);
 #endif
-					o.vertex        = mul(UNITY_MATRIX_MVP, i.vertex);
+					o.vertex        = UnityObjectToClipPos(i.vertex);
 					o.texcoord0     = dot(near.xyz, normalize(lCam.xyz - far.xyz));
 					o.texcoord1     = near.xyz;
 					o.texcoord2.xyz = 1.0f;
