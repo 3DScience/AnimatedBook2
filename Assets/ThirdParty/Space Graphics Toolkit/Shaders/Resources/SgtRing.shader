@@ -1,3 +1,5 @@
+// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
 // Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
 
 Shader "Hidden/SgtRing"
@@ -91,7 +93,7 @@ Shader "Hidden/SgtRing"
 				{
 					float4 wPos = mul(unity_ObjectToWorld, i.vertex);
 
-					o.vertex    = mul(UNITY_MATRIX_MVP, i.vertex);
+					o.vertex    = UnityObjectToClipPos(i.vertex);
 					o.texcoord0 = i.texcoord0;
 					o.texcoord1 = 1.0f;
 #if LIGHT_0 || LIGHT_1 || LIGHT_2
