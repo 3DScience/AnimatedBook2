@@ -60,6 +60,8 @@ namespace isotope
 			{
 				foreach( var f in System.IO.Directory.GetFiles( this.Directory, this.Pattern ) )
 				{
+					if (f.Contains (".DS_Store"))
+						Debug.Log ("DS_Store: " + f.ToString ());
 					if( !f.Contains( ".meta" ) )
 						yield return f.Replace( '\\', '/' );
 				}

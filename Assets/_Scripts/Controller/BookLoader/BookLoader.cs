@@ -18,8 +18,10 @@ public class BookLoader : MonoBehaviour {
         //Caching.CleanCache();
         if (assetBundleName == null || assetBundleName == "")
         {
-            //assetBundleName = "test_book"; 
-            assetBundleName = "solar_system_book";
+            assetBundleName = "q10k_01"; 
+			//assetBundleName = "littleredridinghood";
+			//assetBundleName = "solar_system_book";
+			//assetBundleName = "nearest_stars";
         }
 #if !UNITY_WEBGL
        // DebugOnScreen.Log("init mainfest 10");
@@ -27,7 +29,7 @@ public class BookLoader : MonoBehaviour {
 		try
 		{
 
-		//DebugOnScreen.Log("BookLoader Start assetBundleName=" + assetBundleName);
+		DebugOnScreen.Log("BookLoader Start assetBundleName=" + assetBundleName);
 		BookSceneLoader sceneLoader = gameObject.AddComponent<BookSceneLoader>();
 		sceneLoader.assetBundleName = assetBundleName;
 		sceneLoader.sceneName = "page1";
@@ -89,6 +91,7 @@ public class BookLoader : MonoBehaviour {
         GameObject[] gos = GameObject.FindGameObjectsWithTag("DestroyOnHome");
         foreach (var go in gos)
         {
+			DebugOnScreen.Log ("DestroyObject:" + go);
             DestroyObject(go);
         }
         SceneManager.UnloadSceneAsync(GlobalVar.BOOK_LOADER_SCENE);

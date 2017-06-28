@@ -37,7 +37,7 @@ public class UiEventHandler : MonoBehaviour {
         {
             ButtonToEnd();
             //add ads
-            gameObject.AddComponent<AdsController>();
+            //gameObject.AddComponent<AdsController>();
         }
         else
             ButtonToPage();

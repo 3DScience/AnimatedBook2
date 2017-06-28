@@ -31,10 +31,10 @@ namespace AssetBundles
 //			buildMap[0].assetNames = AssetDatabase.GetAssetPathsFromAssetBundle("universal");
 
 
-//			buildMap[0].assetBundleName = "nearest_stars";
-//			buildMap[0].assetNames = AssetDatabase.GetAssetPathsFromAssetBundle("nearest_stars");
-//			buildMap[1].assetBundleName = "universal";
-//			buildMap[1].assetNames = AssetDatabase.GetAssetPathsFromAssetBundle("universal");
+			buildMap[0].assetBundleName = "nearest_stars";
+			buildMap[0].assetNames = AssetDatabase.GetAssetPathsFromAssetBundle("nearest_stars");
+			buildMap[1].assetBundleName = "universal";
+			buildMap[1].assetNames = AssetDatabase.GetAssetPathsFromAssetBundle("universal");
 
 //            buildMap[0].assetBundleName = "q10k_01";
 //			buildMap[0].assetNames = AssetDatabase.GetAssetPathsFromAssetBundle("q10k_01");
@@ -45,8 +45,8 @@ namespace AssetBundles
 //			buildMap[1].assetBundleName = "universal";
 //			buildMap[1].assetNames = AssetDatabase.GetAssetPathsFromAssetBundle("universal");
 
-			buildMap[0].assetBundleName = "solar_system_book";
-			buildMap[0].assetNames = AssetDatabase.GetAssetPathsFromAssetBundle("solar_system_book");
+//			buildMap[0].assetBundleName = "solar_system_book";
+//			buildMap[0].assetNames = AssetDatabase.GetAssetPathsFromAssetBundle("solar_system_book");
 
 //			buildMap[0].assetBundleName = "weather_maker";
 //			buildMap[0].assetNames = AssetDatabase.GetAssetPathsFromAssetBundle("weather_maker");
