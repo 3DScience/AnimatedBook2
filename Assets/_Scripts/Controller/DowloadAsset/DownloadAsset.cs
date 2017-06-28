@@ -137,7 +137,7 @@ public class DownloadAsset : MonoBehaviour {
             initDialogMessage();
         }
         dialogMessageController.setActive(true);
-        dialogMessageController.setMessage("There are some errors when loading!");
+        dialogMessageController.setMessage("Loading error ...");
         dialogMessageController.setButtonText("Retry");
        
 #if DEVELOPMENT_BUILD
@@ -182,7 +182,7 @@ public class DownloadAsset : MonoBehaviour {
     {
         if(currentDownloadDependencyIdx >= dependeciesBook.Count )
         {
-            barBehaviour.m_AttachedText.text = "DONE";
+            barBehaviour.m_AttachedText.text = "Done";
 
             if (dependeciesBook.Count > 0)
             {
@@ -270,7 +270,7 @@ public class DownloadAsset : MonoBehaviour {
     }
     IEnumerator unzipFile(string zipFile,string path)
     {
-        barBehaviour.m_AttachedText.text = "extracting...";
+        barBehaviour.m_AttachedText.text = "Extracting...";
         yield return null;
         try
         {
