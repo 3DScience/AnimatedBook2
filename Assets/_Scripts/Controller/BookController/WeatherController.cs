@@ -26,48 +26,48 @@ public class WeatherController : MonoBehaviour {
 				Debug.Log ("Load weather component successfully");
 
 				//disable some un-use objects
-				GameObject config = weatherController.transform.FindChild("ConfigurationCanvas").gameObject;
+				GameObject config = weatherController.transform.Find("ConfigurationCanvas").gameObject;
 				Destroy(config);
 
 				if (snowFlag == false) {
-					GameObject snow = weatherController.transform.FindChild("SnowPrefab").gameObject;
+					GameObject snow = weatherController.transform.Find("SnowPrefab").gameObject;
 					Destroy(snow);
 				}
 
 				if (hailFlag == false) {
-					GameObject hail = weatherController.transform.FindChild("HailPrefab").gameObject;
+					GameObject hail = weatherController.transform.Find("HailPrefab").gameObject;
 					Destroy(hail);
 				}
 
 				if (sleedFlag == false) {
-					GameObject sleed = weatherController.transform.FindChild("SleetPrefab").gameObject;
+					GameObject sleed = weatherController.transform.Find("SleetPrefab").gameObject;
 					Destroy(sleed);
 				}
 
 				if (sunFlag == false) {
-					GameObject sun = weatherController.transform.FindChild("Sun").gameObject;
+					GameObject sun = weatherController.transform.Find("Sun").gameObject;
 					Destroy(sun);
 				}
 
-				GameObject skySphere = weatherController.transform.FindChild("SkySphere").gameObject;
+				GameObject skySphere = weatherController.transform.Find("SkySphere").gameObject;
 				Destroy(skySphere);
 
 				if (dayNightCycleFlag == false) {
-					GameObject dayNightCycle = weatherController.transform.FindChild("DayNightCycle").gameObject;
+					GameObject dayNightCycle = weatherController.transform.Find("DayNightCycle").gameObject;
 					Destroy(dayNightCycle);
 				}
 
 				if (cloudsFlag == false) {
-					GameObject clouds = weatherController.transform.FindChild("Clouds").gameObject;
+					GameObject clouds = weatherController.transform.Find("Clouds").gameObject;
 					Destroy(clouds);
 				}
 
 				if (fogFlag == false) {
-					GameObject fog = weatherController.transform.FindChild("Fog").gameObject;
+					GameObject fog = weatherController.transform.Find("Fog").gameObject;
 					Destroy(fog);
 				}
 
-				GameObject thunder = weatherController.transform.FindChild("ThunderAndLightningPrefab").gameObject;
+				GameObject thunder = weatherController.transform.Find("ThunderAndLightningPrefab").gameObject;
 				WeatherMakerThunderAndLightningScript3D script  = thunder.GetComponent<WeatherMakerThunderAndLightningScript3D>();
 				script.Camera = Camera.main;
 

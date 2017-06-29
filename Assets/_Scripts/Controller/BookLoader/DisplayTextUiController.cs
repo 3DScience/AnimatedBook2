@@ -147,7 +147,7 @@ public class DisplayTextUiController : MonoBehaviour {
     }
     private void AddEventTrigeerToExplorerButton(GameObject uiGameobject, System.Action explorerButtonClick)
     {
-        Transform tranform_explorerButton = uiGameobject.transform.FindChild(NAME_BUTTON_LAYOUT + "/" + NAME_EXPLORER_BUTTON);
+        Transform tranform_explorerButton = uiGameobject.transform.Find(NAME_BUTTON_LAYOUT + "/" + NAME_EXPLORER_BUTTON);
         if (tranform_explorerButton != null)
         {
             GameObject explorerButton = tranform_explorerButton.gameObject;
@@ -163,7 +163,7 @@ public class DisplayTextUiController : MonoBehaviour {
     }
     private void AddEventTriggerToButtons(GameObject uiGameobject)
     {
-        Transform tranformButton = uiGameobject.transform.FindChild(NAME_BUTTON_LAYOUT + "/" + NAME_PRE_BUTTON);
+        Transform tranformButton = uiGameobject.transform.Find(NAME_BUTTON_LAYOUT + "/" + NAME_PRE_BUTTON);
         if (tranformButton != null)
         {
             if (Debug.isDebugBuild)
@@ -178,7 +178,7 @@ public class DisplayTextUiController : MonoBehaviour {
             explorerButtonEvenTrigger.triggers.Clear();
             explorerButtonEvenTrigger.triggers.Add(entry);
         }
-        tranformButton = uiGameobject.transform.FindChild(NAME_BUTTON_LAYOUT + "/" + NAME_NEXT_BUTTON);
+        tranformButton = uiGameobject.transform.Find(NAME_BUTTON_LAYOUT + "/" + NAME_NEXT_BUTTON);
         if (tranformButton != null)
         {
             GameObject explorerButton = tranformButton.gameObject;
