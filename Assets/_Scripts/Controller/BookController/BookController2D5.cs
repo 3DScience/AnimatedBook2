@@ -65,7 +65,7 @@ public class BookController2D5 : MonoBehaviour {
 			pg = "Flip_Page/page";
 			pg = pg + i;
 
-			pages.Add(transform.FindChild(pg).gameObject);
+			pages.Add(transform.Find(pg).gameObject);
 
 			//left pageske
 			left_pgske = "Book_Ske/page_ske{0}/left_pageske{1}";

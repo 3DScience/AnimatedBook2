@@ -225,8 +225,8 @@ public class InteractiveController : MonoBehaviour {
                 return;
             }
             MovingCam movingCam = Camera.main.gameObject.AddComponent<MovingCam>();
-            Transform startMarker = Camera.main.transform.FindChild(action.getDictionaryActionParam()["startMarker"]);
-            Transform endMarker = Camera.main.transform.FindChild(action.getDictionaryActionParam()["endMarker"]);
+            Transform startMarker = Camera.main.transform.Find(action.getDictionaryActionParam()["startMarker"]);
+            Transform endMarker = Camera.main.transform.Find(action.getDictionaryActionParam()["endMarker"]);
             movingCam.startMarker = startMarker;
             movingCam.endMarker = endMarker;
             movingCam.onMoveCameraEnd = onMoveCameraEnd;
