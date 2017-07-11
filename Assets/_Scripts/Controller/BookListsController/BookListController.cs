@@ -51,7 +51,7 @@ public class BookListController : MonoBehaviour {
         }
         listGameObjectBookAdded.Clear();
         BooksFireBaseDb.getInstance().getBooksFromLocal(books => {
-
+//			Debug.Log("books :: info :: "+ books);
             foreach (var book in books)
             {
                 GameObject g = GameObject.Instantiate(bookListItemPref);
