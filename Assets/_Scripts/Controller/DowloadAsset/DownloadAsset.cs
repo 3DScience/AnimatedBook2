@@ -1,5 +1,6 @@
 ﻿#if !UNITY_WEBGL
 using UnityEngine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -7,6 +8,23 @@ using System.Text;
 using ProgressBar;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+
+[Serializable]
+public class BookAndDependenciesInfo {
+	public string version;
+	public string[] dependencies;
+}
+
+[Serializable]
+public class DependencyVersion {
+	public string dependencyID;
+	public string version;
+}
+
+[Serializable]
+public class DependenciesArray {
+	public DependencyVersion[] dependencies;
+}
 
 public class DownloadAsset : MonoBehaviour {
 	public Text txtMsg;
@@ -18,7 +36,8 @@ public class DownloadAsset : MonoBehaviour {
 	private string url;
 	private bool isSavingFile= false;
 	private bool isDownloadingMainBook = true;	//main book
-	private string jsonPath = "";
+	private string jsonBookPath = "";
+	private string jsonDependencyPath = "dependencies.json";
 	string assetBundleName = "";
 	ProgressBarBehaviour barBehaviour;
 	private List<BookInfo> dependeciesBook = new List<BookInfo>();
@@ -27,13 +46,11 @@ public class DownloadAsset : MonoBehaviour {
 	/*
 	 json format
 	  {
-        "book_id1":{
           "version":"1",
-          "dependencies”:{
-            “0001” : “1”,
-            “0002” : “1”
+          "dependencies”:{[
+            “0001”,
+            “0002”]
           }
-        }
 	  }	  
 	 */
 
@@ -62,11 +79,6 @@ public class DownloadAsset : MonoBehaviour {
 				}
 			}
 
-			string jsonName = bookInfo.id;
-
-			jsonName = jsonName + ".json";
-			jsonPath = assetDataFolder + jsonName;
-
 		}
 
 
@@ -83,6 +95,7 @@ public class DownloadAsset : MonoBehaviour {
 		{
 			assetDataFolder = GlobalVar.DATA_PATH + "/" ;
 			string olderFile = assetDataFolder + assetBundleName;
+			//DebugOnScreen.Log ("olderFile :: " +olderFile);
 			if (File.Exists(olderFile))
 			{
 				File.Delete(olderFile);
@@ -90,16 +103,32 @@ public class DownloadAsset : MonoBehaviour {
 				File.Delete(olderFile + ".manifest");
 				Caching.CleanCache();
 			}
+
+			string jsonName = bookInfo.id;
+
+			jsonName = jsonName + ".json";
+			jsonBookPath = assetDataFolder + jsonName;
+			jsonDependencyPath = assetDataFolder + jsonDependencyPath;
+
+			if (!File.Exists (jsonBookPath)) {
+				var file = File.CreateText (jsonBookPath);
+				file.Close ();
+			}
+
+			if (!File.Exists (jsonDependencyPath)) {
+				var file = File.CreateText (jsonDependencyPath);
+				file.Close ();
+			}
 		}
 		catch (System.Exception ex)
 		{
-			DebugOnScreen.Log(ex.ToString());
+			//DebugOnScreen.Log(ex.ToString());
 		}
 
 		txtMsg.text = "Downloading contents.";
 		url = GlobalVar.BASE_ASSET_DOWNLOAD_URL + bookInfo.download_url + "/" + bookInfo.assetbundle + "_" + platform + ".zip";
 		//if (GlobalVar.DEBUG)
-		DebugOnScreen.Log("url 1 =" + url);
+		//DebugOnScreen.Log("url 1 =" + url);
 		startDownload();
 	}
 	private void startDownload()
@@ -164,7 +193,7 @@ public class DownloadAsset : MonoBehaviour {
 		dialogMessageController.setButtonText("Retry");
 
 #if DEVELOPMENT_BUILD
-DebugOnScreen.Log("download err:" + www.error);
+//DebugOnScreen.Log("download err:" + www.error);
 #endif
 		www.Dispose();
 		www = null;
@@ -188,26 +217,58 @@ DebugOnScreen.Log("download err:" + www.error);
 
 				if (isDownloadingMainBook == true) {
 					isDownloadingMainBook = false;
-					createBookJsonFile();
+					StartCoroutine(createBookJsonFile());
 
 				} else {
 					//update version for dependencies
-					BookInfo downloadedDependency = dependeciesBook[currentDownloadDependencyIdx];
-					DebugOnScreen.Log("Old book version info :: " + JsonUtility.ToJson(downloadedDependency));
+					if (currentDownloadDependencyIdx > 0 && currentDownloadDependencyIdx <= dependeciesBook.Count) {
 
-					Dictionary<string, object> bookFullInfo = getBookVersionInfo(jsonPath);
-					Dictionary<string, object> dependenciesInfo = convertJsonStringToObject(bookFullInfo["dependencies"].ToString());
+						BookInfo downloadedDependency = dependeciesBook [currentDownloadDependencyIdx - 1];
+						//DebugOnScreen.Log ("just downloaded dependency version info :: " + JsonUtility.ToJson (downloadedDependency));
 
-					dependenciesInfo[downloadedDependency.id] = downloadedDependency.version;
+						DependenciesArray depArr = new DependenciesArray();
+						DependencyVersion[] alDepVerInfo = getAllDependenciesVersionInfo();//old info
+						//DebugOnScreen.Log ("getAllDependenciesVersionInfo :: ok");
 
-					DebugOnScreen.Log("New book version info :: " + JsonUtility.ToJson(downloadedDependency));
+						if (alDepVerInfo != null && alDepVerInfo.Length > 0) {
 
-					var openFile = File.Open(jsonPath, FileMode.Truncate);
-					string newContent = JsonUtility.ToJson(bookFullInfo);
+							List<DependencyVersion> newverions = new List<DependencyVersion> (alDepVerInfo);
 
-					Encoding unicode = new UnicodeEncoding();
-					openFile.Write(unicode.GetBytes(newContent), 0, newContent.Length);
-					openFile.Close();
+							foreach (DependencyVersion ver in alDepVerInfo) {
+								//DebugOnScreen.Log ("old version :: " + ver.version);
+								if (ver.dependencyID.Equals (downloadedDependency.id)) {
+									//DebugOnScreen.Log ("getBookFullInfo :: ver :: " + ver.dependencyID); 
+									ver.version = downloadedDependency.version;
+									newverions.Remove (ver);
+
+									break;
+								}
+							}
+
+							DependencyVersion newver = new DependencyVersion ();
+							newver.dependencyID = downloadedDependency.id;
+							newver.version = downloadedDependency.version;
+
+							newverions.Add (newver);
+							depArr.dependencies = newverions.ToArray ();
+
+						} else {
+							//DebugOnScreen.Log ("else :: " + downloadedDependency.id + " :: " +downloadedDependency.version );
+							DependencyVersion dependencyVersion = new DependencyVersion ();
+							dependencyVersion.dependencyID = downloadedDependency.id;
+							dependencyVersion.version = downloadedDependency.version;
+
+							List<DependencyVersion> arr = new List<DependencyVersion> ();
+							arr.Add (dependencyVersion);
+
+							depArr.dependencies = arr.ToArray ();
+						}
+
+						//DebugOnScreen.Log ("New dependency version info");
+						//DebugOnScreen.Log ("New dependency version info :: " + JsonUtility.ToJson (depArr));
+
+						StartCoroutine (writeFileWithData (jsonDependencyPath, JsonUtility.ToJson (depArr)));
+					}
 				}
 
 				StartCoroutine( saveFileToLocal());
@@ -227,8 +288,29 @@ DebugOnScreen.Log("download err:" + www.error);
 		}
 
 	}
+
+	IEnumerator writeFileWithData(string jsPath, string data) {
+		if (!File.Exists (jsPath)) {
+			var file = File.CreateText (jsPath);
+			file.Close ();
+		}
+
+		var openFile = File.Open(jsPath, FileMode.Truncate);
+
+		Encoding encode = new UTF8Encoding();
+		openFile.Write(encode.GetBytes(data), 0, encode.GetBytes(data).Length);
+		openFile.Close();
+
+		yield return null;
+	}
+
+	//if there is no dependency need to download again, www.isDone is still true;
+	//in update() method, it will work wrong
+	//=> need to reset it some where => after save data successfully
 	private void downloadDependencies()
 	{
+		//DebugOnScreen.Log("currentDownloadDependencyIdx :: " + currentDownloadDependencyIdx);
+		//DebugOnScreen.Log("dependeciesBook.Count :: " + dependeciesBook.Count);
 		if(currentDownloadDependencyIdx >= dependeciesBook.Count )
 		{
 			barBehaviour.m_AttachedText.text = "Done";
@@ -243,7 +325,10 @@ DebugOnScreen.Log("download err:" + www.error);
 					i++;
 				}
 				BookLoader.dependenciesAbName = dependenciesAbName;
+				//DebugOnScreen.Log ("TAI SAO DEO LOAD LEN :: " +dependenciesAbName);
 			}
+
+			//DebugOnScreen.Log ("TAI SAO DEO LOAD LEN");
 			BookLoader.assetBundleName = assetBundleName;
 			SceneManager.LoadScene(GlobalVar.BOOK_LOADER_SCENE);
 		}else
@@ -255,17 +340,17 @@ DebugOnScreen.Log("download err:" + www.error);
 
 			if( !checkDependencyToDownload(dependencyBook))
 			{
-				//DebugOnScreen.Log("Download dependency book: " + dependencyBook.name);
+				////DebugOnScreen.Log("Download dependency book: " + dependencyBook.name);
 
 				url = GlobalVar.BASE_ASSET_DOWNLOAD_URL + dependencyBook.download_url + "/" + dependencyBook.assetbundle + "_" + platform + ".zip";
 				//url = GlobalVar.BASE_ASSET_DOWNLOAD_URL + dependencyBook.download_url + "/" + platform + ".zip";
 				//if (GlobalVar.DEBUG)
-				DebugOnScreen.Log("url 2=" + url);
+				//DebugOnScreen.Log("url 2=" + url);
 				www = new WWW(url);
-
+				currentDownloadDependencyIdx++;
 			}
 			else {
-				//DebugOnScreen.Log("dependency book \"" + dependencyBook.name +"\" is existing.");
+				////DebugOnScreen.Log("dependency book \"" + dependencyBook.name +"\" is existing.");
 				currentDownloadDependencyIdx++;
 				downloadDependencies();
 			}
@@ -275,6 +360,8 @@ DebugOnScreen.Log("download err:" + www.error);
 	}
 
 	//if file is not exist or obsoleted => download
+	//false: need to re-download
+	//true: do not re-download
 	private bool checkDependencyToDownload(BookInfo dependencyBook)
 	{
 		string abname = dependencyBook.assetbundle;
@@ -284,26 +371,29 @@ DebugOnScreen.Log("download err:" + www.error);
 			platform = "iOS";
 		}
 		bool existed = File.Exists(assetDataFolder +platform+"/"+ abname);
-		DebugOnScreen.Log("checking exist ab name " + assetDataFolder + platform + "/" + abname+". Result=" +existed);
-
+		//DebugOnScreen.Log("checking exist ab name " + assetDataFolder + platform + "/" + abname+". Result=" +existed);
+		//there is a case, a dependency had been downloaded by other books
+		//its information is not being contained in this json
+		//so, oldVersion will be blank
 		if (existed) {
-			string oldVersion = getDependencyVersion(jsonPath, dependencyBook.id);
+			string oldVersion = getDependencyVersion(dependencyBook.id);
 			int intOldVersion = int.Parse(oldVersion);
 			int intNewVersion = int.Parse(dependencyBook.version);
 
-			DebugOnScreen.Log("NewVersion :: " + intNewVersion);
-			DebugOnScreen.Log("OldVersion :: " + intOldVersion);
+			//DebugOnScreen.Log("NewVersion :: " + intNewVersion);
+			//DebugOnScreen.Log("OldVersion :: " + intOldVersion);
 
 			if (intNewVersion > intOldVersion) {
-				DebugOnScreen.Log("Need to download new version of :: " + dependencyBook.assetbundle);
-				return true;
+				//DebugOnScreen.Log("Need to download new version of :: " + dependencyBook.assetbundle);
+				return false;
 
 			} else {
-				DebugOnScreen.Log("Do NOT download new version of :: " + dependencyBook.assetbundle);
-				return false;
+				//DebugOnScreen.Log("Do NOT download new version of :: " + dependencyBook.assetbundle);
+				return true;
 			}
 		}
 
+		//DebugOnScreen.Log ("checkDependencyToDownload :: not exist :: " + abname);
 		return false;
 	}
 
@@ -329,10 +419,14 @@ DebugOnScreen.Log("download err:" + www.error);
 			if (Debug.isDebugBuild)
 				Debug.Log("dataFile=" + zipFile);
 			System.IO.File.WriteAllBytes(zipFile, data);
+
+			www.Dispose();
+			www = null;
+
 		}
 		catch (System.Exception ex)
 		{
-			DebugOnScreen.Log(ex.ToString());
+			//DebugOnScreen.Log(ex.ToString());
 			yield break;
 		}
 
@@ -351,18 +445,14 @@ DebugOnScreen.Log("download err:" + www.error);
 		}
 		catch (System.Exception ex)
 		{
-			DebugOnScreen.Log(ex.ToString());
+			//DebugOnScreen.Log(ex.ToString());
 			yield break;
 		}
 
 		if (Debug.isDebugBuild)
 			Debug.Log("unzip done!");
 
-		//next dependency
-		if (isDownloadingMainBook == false) {
-			currentDownloadDependencyIdx++;
-		}
-
+		//DebugOnScreen.Log ("unzipFile completed :: download dep");
 		downloadDependencies();
 		//barBehaviour.m_AttachedText.text = "DONE";
 		//BookLoader.assetBundleName = assetBundleName;
@@ -370,45 +460,61 @@ DebugOnScreen.Log("download err:" + www.error);
 		yield return null;
 	}
 
-	private void createBookJsonFile() {
+	IEnumerator createBookJsonFile() {
 		BookInfo bookInfo = (BookInfo) GlobalVar.shareContext.shareVar["bookInfo"];
-
+		//DebugOnScreen.Log ("createBookJsonFile :: " +jsonBookPath);
 		if (!Directory.Exists(assetDataFolder))
 		{
 			Directory.CreateDirectory(assetDataFolder);
 		}
 
 		//create new if file is not exist
-		if (!File.Exists(jsonPath))
+		if (!File.Exists(jsonBookPath))
 		{
-			var file = File.CreateText(jsonPath);
-
+			var file = File.CreateText(jsonBookPath);
+			file.Close ();
+			//DebugOnScreen.Log ("createBookJsonFile :: new");
 			//create content
-			Dictionary<string, object> content = new Dictionary<string, object> ();
-			content["version"] = bookInfo.version;
-			content["dependencies"] = "";
-			file.WriteLine (JsonUtility.ToJson(content));
+			BookAndDependenciesInfo content = new BookAndDependenciesInfo ();
+			content.version = bookInfo.version;
 
-			return;
+			List<string> arr = new List<string> ();
+			content.dependencies = arr.ToArray();
+
+			//write content with no dependency info
+			//DebugOnScreen.Log(JsonUtility.ToJson(content));
+			File.WriteAllText(jsonBookPath, JsonUtility.ToJson(content));
+
+		} else {
+
+			//DebugOnScreen.Log ("createBookJsonFile :: edit");
+			//if existed, read file and update version
+			string oldContent = readJsonFile (jsonBookPath);
+			//DebugOnScreen.Log ("createBookJsonFile :: oldContent :: " + oldContent);
+
+			BookAndDependenciesInfo oldContentObj = JsonUtility.FromJson<BookAndDependenciesInfo>(oldContent);
+			oldContentObj.version = bookInfo.version;
+
+			//DebugOnScreen.Log(JsonUtility.ToJson(oldContentObj));
+
+			var openFile = File.Open(jsonBookPath, FileMode.Truncate);
+			string newContent = JsonUtility.ToJson(oldContentObj);
+
+			Encoding unicode = new UTF8Encoding();
+			openFile.Write(unicode.GetBytes(newContent), 0, newContent.Length);
+			openFile.Close();
 		}
 
-		//if existed, read file and update version
-		string oldContent = readJsonFile (jsonPath);
-		Dictionary<string, object> oldContentObj = convertJsonStringToObject(oldContent);
-		oldContentObj["version"] = bookInfo.version;
-
-		var openFile = File.Open(jsonPath, FileMode.Truncate);
-		string newContent = JsonUtility.ToJson(oldContentObj);
-
-		Encoding unicode = new UnicodeEncoding();
-		openFile.Write(unicode.GetBytes(newContent), 0, newContent.Length);
-		openFile.Close();
+		yield return null;
 	}
 
-	private string readJsonFile(string jsonPath) {
-		if(File.Exists(jsonPath)){
-			var sr = File.OpenText(jsonPath);
+	private string readJsonFile(string jsonBookPath) {
+		//DebugOnScreen.Log ("readJsonFile");
+		if(File.Exists(jsonBookPath)){
+			var sr = File.OpenText(jsonBookPath);
 			string line = sr.ReadToEnd();
+			sr.Close ();
+			//			string line = File.ReadAllText (jsonBookPath);
 
 			if (line != null){
 				Debug.Log(line);
@@ -416,48 +522,64 @@ DebugOnScreen.Log("download err:" + www.error);
 				return line;
 			}
 
+			//DebugOnScreen.Log ("tai sao lai null");
 			return "";
 
 		} else {
-			Debug.Log("Could not Open the file: " + jsonPath);
+			//DebugOnScreen.Log("Could not Open the file: " + jsonBookPath);
+			Debug.Log("Could not Open the file: " + jsonBookPath);
 			return "";
 		}
 	}
 
-	private Dictionary<string, object> convertJsonStringToObject(string jsonString) {
-		Debug.Log("convertJsonStringToObject :: " + jsonString);
-
-		Dictionary<string, object> dictionary = new Dictionary<string, object>();
-		string[] items = jsonString.TrimStart('{').TrimEnd('}').Split(',');
-
-		foreach (string item in items) {
-			string[] keyValue = item.Split(':');
-			dictionary.Add(keyValue[0].Trim('"'), keyValue[1]);
-		}
-
-		return dictionary;
-	}
-
-	private Dictionary<string, object> getBookVersionInfo(string jsonPath) {
-		if(File.Exists(jsonPath)){
-			string oldContent = readJsonFile (jsonPath);
-			Dictionary<string, object> oldContentObj = convertJsonStringToObject(oldContent);
+	private BookAndDependenciesInfo getBookFullInfo(string jsonBookPath) {
+		if(File.Exists(jsonBookPath)){
+			string oldContent = readJsonFile (jsonBookPath);
+			//DebugOnScreen.Log ("getBookFullInfo :: readJsonFile :: " +oldContent);
+			BookAndDependenciesInfo oldContentObj = JsonUtility.FromJson<BookAndDependenciesInfo>(oldContent);
+			//DebugOnScreen.Log ("getBookFullInfo :: parse ok");
 
 			return oldContentObj;
 
 		} else {
-			Debug.Log("Could not Open the file: " + jsonPath);
+			//DebugOnScreen.Log ("Could not Open the file :: " +jsonBookPath);
+			Debug.Log("Could not Open the file: " + jsonBookPath);
 			return null;
 		}
 	}
 
-	private string getDependencyVersion (string jsonPath, string bookID) {
-		Dictionary<string, object> bookFullInfo = getBookVersionInfo(jsonPath);
-		Dictionary<string, object> dependenciesInfo = convertJsonStringToObject(bookFullInfo["dependencies"].ToString());
+	private DependencyVersion[] getAllDependenciesVersionInfo() {
+		if(File.Exists(jsonDependencyPath)){
+			string oldContent = readJsonFile (jsonDependencyPath);
+			//DebugOnScreen.Log ("getAllDependenciesVersionInfo :: readJsonFile :: " +oldContent);
+			DependenciesArray oldContentObj = JsonUtility.FromJson<DependenciesArray>(oldContent);
+			//DebugOnScreen.Log ("getAllDependenciesVersionInfo :: parse ok");
+
+			return oldContentObj.dependencies;
+
+		} else {
+			//DebugOnScreen.Log ("Could not Open the file :: " +jsonDependencyPath);
+			Debug.Log("Could not Open the file: " + jsonDependencyPath);
+			return null;
+		}
+	}
+
+	private string getDependencyVersion (string bookID) {
+		//DebugOnScreen.Log ("getDependencyVersion");
+
+		DependencyVersion[] versions = getAllDependenciesVersionInfo();
 		string res = "";
+		//DebugOnScreen.Log ("bookID :: " +bookID);
+		foreach(DependencyVersion ver in versions) {
+			//DebugOnScreen.Log ("ver dep id :: " +ver.dependencyID);
+			if (ver.dependencyID.Equals(bookID)) {
+				res = ver.version;
 
-		res = dependenciesInfo[bookID].ToString();
+				break;
+			}
+		}
 
+		//DebugOnScreen.Log ("return :: " +res);
 		return res;
 	}
 
