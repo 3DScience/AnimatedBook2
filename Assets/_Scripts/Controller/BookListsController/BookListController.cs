@@ -38,8 +38,6 @@ public class BookListController : MonoBehaviour {
         //    bookListItemController.idx = i;
         //    //Debug.Log("added " + bookListItemController.idx);
         //}
-
-
     }
     private void loadListBook()
     {
