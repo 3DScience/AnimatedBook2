@@ -12,6 +12,8 @@ public class GlobalVar {
     public static ShareContext shareContext;
     public static string DATA_PATH;
     public static string DB_PATH;
+	public static string THUMBNAILS_PATH;
+	public static string JSONS_PATH;
 #if DEVELOPMENT_BUILD
 		public static string BASE_ASSET_DOWNLOAD_URL = "http://192.168.0.201/unity3d/3dbook_test/";
 #else
@@ -34,10 +36,28 @@ public class GlobalVar {
         DATA_PATH += "/Data";
         DB_PATH= Application.persistentDataPath+"/db";
 
+		THUMBNAILS_PATH = DATA_PATH + "/Thumbnails";
+		JSONS_PATH = DATA_PATH + "/Jsons";
+
         if (!Directory.Exists(DB_PATH))
         {
             Directory.CreateDirectory(DB_PATH);
         }
+
+		if (!Directory.Exists(DATA_PATH))
+		{
+			Directory.CreateDirectory(DATA_PATH);
+		}
+
+		if (!Directory.Exists(THUMBNAILS_PATH))
+		{
+			Directory.CreateDirectory(THUMBNAILS_PATH);
+		}
+
+		if (!Directory.Exists(JSONS_PATH))
+		{
+			Directory.CreateDirectory(JSONS_PATH);
+		}
 
         GameObject g = new GameObject("ShareContext");
         shareContext=g.AddComponent<ShareContext>();
