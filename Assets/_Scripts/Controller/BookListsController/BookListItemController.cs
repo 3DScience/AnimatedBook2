@@ -14,9 +14,12 @@ public class BookListItemController : MonoBehaviour {
 	private string thumbnailPath = "";
 	private WWW imgLink;
 	private bool loadLocal = false;
+	private bool isSavingFile = false;
 
     // Use this for initialization
     void Start () {
+		isSavingFile = false;
+
         string imageUrl = bookInfo.picture_url;
         //Debug.Log("ImageURL="+ imageUrl);
       //  if( imageUrl!=null && imageUrl!="")
@@ -24,17 +27,7 @@ public class BookListItemController : MonoBehaviour {
         txtName.text = bookInfo.name;
 
 		thumbnailPath = GlobalVar.THUMBNAILS_PATH + "/" + Path.GetFileName(bookInfo.picture_url);
-		DebugOnScreen.Log ("BookListItemController :: thumbnailPath :: " +thumbnailPath);
-
-		if (File.Exists(thumbnailPath)) {
-			DebugOnScreen.Log("BookListItemController :: loadImg :: Exists");
-			byte[] fileData = File.ReadAllBytes(thumbnailPath);
-			Texture2D tex = new Texture2D(2, 2);
-			tex.LoadImage(fileData);
-			img.texture = tex;
-
-			loadLocal = true;
-		}
+		//DebugOnScreen.Log ("BookListItemController :: thumbnailPath :: " +thumbnailPath);
     }
 
 	void Update()
@@ -43,9 +36,13 @@ public class BookListItemController : MonoBehaviour {
 		if (imgLink == null) {
 			return;
 		}
-			
+
+
 		if (imgLink.isDone) {
-			StartCoroutine( saveFileToLocal());
+			if (isSavingFile == false) {
+				isSavingFile = true;
+				StartCoroutine( saveFileToLocal());
+			}	
 		}
 	}
 
@@ -61,26 +58,39 @@ public class BookListItemController : MonoBehaviour {
 
     public IEnumerator loadImg()
     {
-		DebugOnScreen.Log("BookListItemController :: loadImg");
+		//DebugOnScreen.Log("BookListItemController :: loadImg");
         if (bookInfo.picture_url != null && bookInfo.picture_url != "")
         {
 			if (thumbnailPath.Length == 0) {
 				thumbnailPath = GlobalVar.THUMBNAILS_PATH + "/" + Path.GetFileName(bookInfo.picture_url);
 			}
 
-			if (loadLocal == false) {
-				DebugOnScreen.Log("BookListItemController :: loadImg :: load from link");
+			if (loadLocal == false && !File.Exists(thumbnailPath)) {
+				//DebugOnScreen.Log("BookListItemController :: loadImg :: load from link");
 				imgLink = new WWW(bookInfo.picture_url);
 
 				yield return imgLink;
 				img.texture = imgLink.texture;
+
+				imgLink.Dispose();
+				imgLink = null;
+
+			} else {
+				//DebugOnScreen.Log("BookListItemController :: loadImg :: Exists");
+				byte[] fileData = File.ReadAllBytes(thumbnailPath);
+				Texture2D tex = new Texture2D(2, 2);
+				tex.LoadImage(fileData);
+				img.texture = tex;
+
+				loadLocal = true;
 			}
         }
     }
 
 	IEnumerator saveFileToLocal() {
-		DebugOnScreen.Log("BookListItemController :: saveFileToLocal");
+		//DebugOnScreen.Log("BookListItemController :: saveFileToLocal");
 		try {
+			
 			byte[] data = imgLink.bytes;
 
 			if (!Directory.Exists(GlobalVar.THUMBNAILS_PATH))
@@ -89,12 +99,11 @@ public class BookListItemController : MonoBehaviour {
 			}
 
 			File.WriteAllBytes(thumbnailPath, data);
-
-			imgLink.Dispose();
-			imgLink = null;
+			isSavingFile = false;
+			//DebugOnScreen.Log("BookListItemController :: saveFileToLocal :: saved ok :: " + Path.GetFileName(thumbnailPath));
 
 		} catch (System.Exception ex) {
-			//DebugOnScreen.Log(ex.ToString());
+			////DebugOnScreen.Log(ex.ToString());
 			yield break;
 		}
 

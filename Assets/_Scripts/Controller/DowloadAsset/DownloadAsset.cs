@@ -107,8 +107,8 @@ public class DownloadAsset : MonoBehaviour {
 			string jsonName = bookInfo.id;
 
 			jsonName = jsonName + ".json";
-			jsonBookPath = GlobalVar.JSONS_PATH + "/" + jsonName;
-			jsonDependencyPath =  GlobalVar.JSONS_PATH + "/" + jsonDependencyPath;
+			jsonBookPath = assetDataFolder + jsonName;
+			jsonDependencyPath = assetDataFolder + jsonDependencyPath;
 
 			if (!File.Exists (jsonBookPath)) {
 				var file = File.CreateText (jsonBookPath);
@@ -463,9 +463,9 @@ public class DownloadAsset : MonoBehaviour {
 	IEnumerator createBookJsonFile() {
 		BookInfo bookInfo = (BookInfo) GlobalVar.shareContext.shareVar["bookInfo"];
 		//DebugOnScreen.Log ("createBookJsonFile :: " +jsonBookPath);
-		if (!Directory.Exists(GlobalVar.JSONS_PATH))
+		if (!Directory.Exists(assetDataFolder))
 		{
-			Directory.CreateDirectory(GlobalVar.JSONS_PATH);
+			Directory.CreateDirectory(assetDataFolder);
 		}
 
 		//create new if file is not exist
