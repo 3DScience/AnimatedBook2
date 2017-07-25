@@ -49,15 +49,15 @@ public class BookControllerLittleRedRidingHood : MonoBehaviour {
         topPageLeft = GameObject.Find("Open_Book/PageLeft");
         topPageRight = GameObject.Find("Open_Book/PageRight");
 
-        page1 = transform.FindChild("Flip_Page/page1").gameObject;
-        page2 = transform.FindChild("Flip_Page/page2").gameObject;
-        page3 = transform.FindChild("Flip_Page/page3").gameObject;
-        page4 = transform.FindChild("Flip_Page/page4").gameObject;
-        page5 = transform.FindChild("Flip_Page/page5").gameObject;
-        page6 = transform.FindChild("Flip_Page/page6").gameObject;
-        page7 = transform.FindChild("Flip_Page/page7").gameObject;
-        page8 = transform.FindChild("Flip_Page/page8").gameObject;
-        page9 = transform.FindChild("Flip_Page/page9").gameObject;
+        page1 = transform.Find("Flip_Page/page1").gameObject;
+        page2 = transform.Find("Flip_Page/page2").gameObject;
+        page3 = transform.Find("Flip_Page/page3").gameObject;
+        page4 = transform.Find("Flip_Page/page4").gameObject;
+        page5 = transform.Find("Flip_Page/page5").gameObject;
+        page6 = transform.Find("Flip_Page/page6").gameObject;
+        page7 = transform.Find("Flip_Page/page7").gameObject;
+        page8 = transform.Find("Flip_Page/page8").gameObject;
+        page9 = transform.Find("Flip_Page/page9").gameObject;
 
         left_pageske2 = GameObject.Find("Book_Ske/page_ske2/left_pageske2");
         left_pageske3 = GameObject.Find("Book_Ske/page_ske3/left_pageske3");
