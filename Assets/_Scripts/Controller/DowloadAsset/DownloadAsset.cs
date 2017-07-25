@@ -107,18 +107,19 @@ public class DownloadAsset : MonoBehaviour {
 			string jsonName = bookInfo.id;
 
 			jsonName = jsonName + ".json";
-			jsonBookPath = assetDataFolder + jsonName;
-			jsonDependencyPath = assetDataFolder + jsonDependencyPath;
+			jsonBookPath = GlobalVar.JSONS_PATH + "/" + jsonName;
+			jsonDependencyPath = GlobalVar.JSONS_PATH + "/" + jsonDependencyPath;
 
-			if (!File.Exists (jsonBookPath)) {
-				var file = File.CreateText (jsonBookPath);
-				file.Close ();
-			}
+			//do not need to create this file here
+//			if (!File.Exists (jsonBookPath)) {
+//				var file = File.CreateText (jsonBookPath);
+//				file.Close ();
+//			}
 
-			if (!File.Exists (jsonDependencyPath)) {
-				var file = File.CreateText (jsonDependencyPath);
-				file.Close ();
-			}
+//			if (!File.Exists (jsonDependencyPath)) {
+//				var file = File.CreateText (jsonDependencyPath);
+//				file.Close ();
+//			}
 		}
 		catch (System.Exception ex)
 		{
@@ -411,10 +412,10 @@ public class DownloadAsset : MonoBehaviour {
 				Debug.Log("dowload file from url " + url + " complete");
 			byte[] data = www.bytes;
 
-			if (!Directory.Exists(assetDataFolder))
-			{
-				Directory.CreateDirectory(assetDataFolder);
-			}
+//			if (!Directory.Exists(assetDataFolder))
+//			{
+//				Directory.CreateDirectory(assetDataFolder);
+//			}
 			zipFile = assetDataFolder  + assetBundleName + ".zip";
 			if (Debug.isDebugBuild)
 				Debug.Log("dataFile=" + zipFile);
@@ -463,10 +464,6 @@ public class DownloadAsset : MonoBehaviour {
 	IEnumerator createBookJsonFile() {
 		BookInfo bookInfo = (BookInfo) GlobalVar.shareContext.shareVar["bookInfo"];
 		//DebugOnScreen.Log ("createBookJsonFile :: " +jsonBookPath);
-		if (!Directory.Exists(assetDataFolder))
-		{
-			Directory.CreateDirectory(assetDataFolder);
-		}
 
 		//create new if file is not exist
 		if (!File.Exists(jsonBookPath))
@@ -482,7 +479,7 @@ public class DownloadAsset : MonoBehaviour {
 			content.dependencies = arr.ToArray();
 
 			//write content with no dependency info
-			//DebugOnScreen.Log(JsonUtility.ToJson(content));
+			//DebugOnScreen.Log("content :: " +JsonUtility.ToJson(content));
 			File.WriteAllText(jsonBookPath, JsonUtility.ToJson(content));
 
 		} else {
