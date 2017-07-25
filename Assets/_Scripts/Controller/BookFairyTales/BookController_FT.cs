@@ -202,14 +202,22 @@ public class BookController_FT : MonoBehaviour {
 
             //Start Story Tell Scence
             if (current_page == 1)
+            {
                 Scence.GetComponent<ScenceController_FT>().StartStoryTellScence();
+                dialog.ExecuteBlock("HideNarrator");
+            }
         }       
+        else if(current_page == max_page)
+            dialog.ExecuteBlock("EndScence");
     }
 
     public void onPrePageClick()
     {       
         if (current_page > 1 && !isAnimationPlay)
             StartCoroutine(prePage(current_page));
+
+        if(current_page == max_page)
+            dialog.ExecuteBlock("HideNarrator2");
     }
 
     GameObject getFlipPage(int current_page)
@@ -563,6 +571,7 @@ public class BookController_FT : MonoBehaviour {
     {
         current_page++;
         this.current_page = current_page;
+        Debug.Log("Page " + current_page + " playing!");
 
         //Play animation pre page
         Animation animation = GetComponent<Animation>();
@@ -700,6 +709,7 @@ public class BookController_FT : MonoBehaviour {
 
         current_page--;
         this.current_page = current_page;
+        Debug.Log("Page " + current_page + " playing!");
 
         dialog.ExecuteBlock("Scence" + current_page);
     }

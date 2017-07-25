@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Fungus;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,9 +9,10 @@ public class ScenceController_FT : MonoBehaviour {
     public Light light;
     public GameObject book;
     public GameObject GUI;
-    
-	// Use this for initialization
-	void Start () {
+    public Flowchart dialog;
+
+    // Use this for initialization
+    void Start () {
         GUI.SetActive(false);
 
         //Move camera
@@ -47,6 +49,7 @@ public class ScenceController_FT : MonoBehaviour {
             light.spotAngle = 70;         
             CancelInvoke();
             GUI.SetActive(true);
+            dialog.ExecuteBlock("StartScence");
             //Debug.Log("Book is opened");
         }
     }
