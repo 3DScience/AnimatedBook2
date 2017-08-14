@@ -18,9 +18,9 @@ public class BookLoader : MonoBehaviour {
         //Caching.CleanCache();
         if (assetBundleName == null || assetBundleName == "")
         {
-            assetBundleName = "q10k_01"; 
+            //assetBundleName = "q10k_01"; 
 			//assetBundleName = "littleredridinghood";
-			//assetBundleName = "solar_system_book";
+			assetBundleName = "solar_system_book";
 			//assetBundleName = "nearest_stars";
         }
 #if !UNITY_WEBGL

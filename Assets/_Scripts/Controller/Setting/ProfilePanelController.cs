@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Firebase;
 using Firebase.Auth;
+using Firebase.Database;
 using Facebook.Unity;
 using UnityEngine.SceneManagement;
 
@@ -39,7 +40,20 @@ public class ProfilePanelController : MonoBehaviour
 			} else {
 				txtEmail.text = ProfileFirebase.getInstance ().auth.CurrentUser.UserId;
 			}
-			//DebugOnScreen.Log("ProfilePanelController- OnLoginStateChange, txtEmail.text 111 = "+ txtEmail.text);
+			DebugOnScreen.Log("ProfilePanelController- OnLoginStateChange, txtEmail.text 111 = "+ txtEmail.text);
+			GlobalVar.tester = "0";
+			FirebaseDatabase.DefaultInstance.RootReference.Child ("private")
+				.Child ("userInfo").Child (ProfileFirebase.getInstance ().auth.CurrentUser.UserId).GetValueAsync ().ContinueWith (taskValue => {
+					if (taskValue.IsFaulted)
+					{
+						// nothing
+					}
+					else if (taskValue.IsCompleted)
+					{
+						DataSnapshot snapshot_ = taskValue.Result;
+						GlobalVar.tester = snapshot_.Child("tester").Value.ToString();
+					}
+				});
         }else
         {
             txtEmail.text = "";
