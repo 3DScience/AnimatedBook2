@@ -22,6 +22,7 @@ public class LoginPanelController : MonoBehaviour {
     public InputField txtPassword;
     public Text txtError;
     public GameObject loadingPanel;
+
     void OnEnable()
     {
 
@@ -84,9 +85,10 @@ public class LoginPanelController : MonoBehaviour {
 			if (GlobalVar.DEBUG)
 				DebugOnScreen.Log ("OnLoginButtonGuestClick");
 			ProfileFirebase.getInstance ().loginAsAnnonymousUser (userInfo => {
-				//DebugOnScreen.Log("OnLoginButtonGuestClick- loginAsAnnonymousUser :: " +userInfo.userID);
+				DebugOnScreen.Log("OnLoginButtonGuestClick- loginAsAnnonymousUser :: " +userInfo.userID);
 				deactiveLoginPanel();
 			});
+
 	}
 
 	void HandleAction (UserInfo obj)
@@ -132,7 +134,10 @@ public class LoginPanelController : MonoBehaviour {
 		}
 	}
 
-    void HandleSigninResult(Task<Firebase.Auth.FirebaseUser> authTask)
+	private FirebaseUser userInfo;
+	private FirebaseUser a;
+	private const string USERSINFO = "userInfo";
+	void HandleSigninResult(Task<Firebase.Auth.FirebaseUser> authTask)
     {
 
         loadingPanel.SetActive(false);
@@ -156,8 +161,50 @@ public class LoginPanelController : MonoBehaviour {
             if (GlobalVar.DEBUG)
                 DebugOnScreen.Log("LoginPanelController- Login completed.");
             deactiveLoginPanel();
+
+			userInfo = authTask.Result;
+			checkInfoUsers(userInfo);
         }
+
     }
+	public void checkInfoUsers(FirebaseUser userInfo_) {
+		FirebaseDatabase.DefaultInstance.RootReference.Child("private")
+			.Child(USERSINFO).Child(userInfo_.UserId).GetValueAsync().ContinueWith(task => {
+				if (task.IsFaulted)
+				{
+					GlobalVar.tester = "0";
+					DebugOnScreen.Log("tester Fuck 0:: " + GlobalVar.tester);
+//					DebugOnScreen.Log("RefreshToken :: " + userInfo_.RefreshToken);
+//					DebugOnScreen.Log("DisplayName :: " + userInfo_.DisplayName);
+//					DebugOnScreen.Log("UserId 0:: " + userInfo_.UserId);
+//					DebugOnScreen.Log("email:: " + userInfo_.Email);
+
+					UserInfo _usersInfo = new UserInfo();
+					_usersInfo.userID = userInfo_.RefreshToken;
+					_usersInfo.username = userInfo_.DisplayName;
+					_usersInfo.firebase_token = userInfo_.RefreshToken;
+					_usersInfo.email = userInfo_.Email;
+
+					createNewUser(_usersInfo);
+				}
+				else if (task.IsCompleted)
+				{
+					DataSnapshot snapshot = task.Result;
+					GlobalVar.tester = snapshot.Child("tester").Value.ToString();
+					DebugOnScreen.Log("tester Fuck 1:: " + GlobalVar.tester);
+//					DebugOnScreen.Log("checkInfoUsers count: " + snapshot.ChildrenCount);
+				}
+			});
+	}
+	public void createNewUser (UserInfo userInfo) {
+		DebugOnScreen.Log("createNewUser loading: " + USERSINFO);
+		FirebaseDatabase.DefaultInstance
+			.GetReference("private")
+			.Child(USERSINFO)
+			.Child(userInfo.userID)
+			.SetRawJsonValueAsync(JsonUtility.ToJson(userInfo));
+		DebugOnScreen.Log("createNewUser Done: " + userInfo.userID);
+	}
 
     public void deactiveLoginPanel()
     {

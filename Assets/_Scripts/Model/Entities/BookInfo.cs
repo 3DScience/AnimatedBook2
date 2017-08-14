@@ -15,7 +15,8 @@ public class BookInfo  {
     public string picture_url;
     public string picture_url_resized;
     public float price;
-    public int status;
+	public string status;
+	public string release;
     public string version;
     public string[] dependencies;
 

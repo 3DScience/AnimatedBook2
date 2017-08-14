@@ -31,7 +31,9 @@ public class BooksFireBaseDb {
     public void saveBooksToLocal(System.Action callbackWhenDone)
     {
         GlobalVar.shareContext.loadingIndicator.SetActive(true);
-        dbf.Child("public").Child("vn").Child("books").GetValueAsync().ContinueWith(task => {
+
+		//dbf.Child("public").Child("vn").Child("books").OrderByChild("status").EqualTo(GlobalVar.tester).GetValueAsync().ContinueWith(task => { 
+		dbf.Child("public").Child("vn").Child("books").GetValueAsync().ContinueWith(task => {
             if (task.IsFaulted)
             {
                 // Handle the error...
@@ -85,6 +87,7 @@ public class BooksFireBaseDb {
     }
     public void getBooksFromLocal(System.Action<List<BookInfo>> callbackWhenDone, string catName)
     {
+		DebugOnScreen.Log ("FUCKING DB 0000");
         if (listAllBooks != null)
         {
             callbackWhenDone(getListBookByCatName(catName));
@@ -104,15 +107,22 @@ public class BooksFireBaseDb {
             });
         }
     }
+	private const string release = "1";
     private List<BookInfo> getListBookByCatName(string catName)
     {
+		DebugOnScreen.Log ("getListBookByCatName tester: " + GlobalVar.tester);
         List<BookInfo> listBookBycatName = new List<BookInfo>();
         foreach (var bookInfo in listAllBooks.books)
         {
-            if (bookInfo.categories.Contains(catName))
-            {
-                listBookBycatName.Add(bookInfo);
-            }
+			if (GlobalVar.tester == "1") {
+				if (bookInfo.categories.Contains (catName)) {
+					listBookBycatName.Add (bookInfo);
+				}
+			} else if (GlobalVar.tester == "0") {
+				if (bookInfo.categories.Contains (catName) && bookInfo.release.Contains (release)) {
+					listBookBycatName.Add (bookInfo);
+				}
+			}
         }
         return listBookBycatName;
     }
