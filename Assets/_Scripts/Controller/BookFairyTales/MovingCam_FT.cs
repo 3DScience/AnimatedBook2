@@ -9,8 +9,8 @@ public class MovingCam_FT : MonoBehaviour {
     public Transform startStoryTellScenceMarker;
     public Transform endStoryTellScenceMarker;
 
-    public float move_speed = 0.6F;
-    public float rotate_speed = 0.6F;
+    public float phase1_speed = 0.6F;
+    public float phase2_speed = 1F;
 
     private float startTime;
 	private float journeyLength;
@@ -19,7 +19,7 @@ public class MovingCam_FT : MonoBehaviour {
     private bool isStoryTellScence = false;
 
     void Start() {
-      
+        //transform.LookAt(GameObject.Find("Book").transform);
 	}
 
 	void Update() {
@@ -27,13 +27,8 @@ public class MovingCam_FT : MonoBehaviour {
             Move(startScenceMarker, endScenceMarker);
 
         if (isStoryTellScence) {
-            Move(startStoryTellScenceMarker, endStoryTellScenceMarker);
-            Rotate();
-            float distance = Vector3.Distance(transform.position, endStoryTellScenceMarker.position);
-            if (distance < 1f) { 
-                rotate_speed = 1.8F;
-                //Debug.Log("Rotate Now!");
-            }
+            transform.rotation = Quaternion.Lerp(transform.rotation, endStoryTellScenceMarker.rotation, Time.deltaTime * phase2_speed);
+            transform.position = Vector3.Lerp(transform.position, endStoryTellScenceMarker.position, Time.deltaTime * phase2_speed);
         }     
     }
 
@@ -45,17 +40,15 @@ public class MovingCam_FT : MonoBehaviour {
     }
 
     public void StoryTellScence()
-    {       
-        startTime = Time.time;
-        journeyLength = Vector3.Distance(startStoryTellScenceMarker.position, endStoryTellScenceMarker.position);
+    {
         isStartScence = false;
-        isStoryTellScence = true;
+        isStoryTellScence = true;       
     }
 
     void Move(Transform startMarker, Transform endMarker)
     {
-        if(startMarker != null && endMarker != null) { 
-            float distCovered = (Time.time - startTime) * move_speed;
+        if(startMarker != null && endMarker != null) {
+            float distCovered = (Time.time - startTime) * phase1_speed;
             float fracJourney = distCovered / journeyLength;
             transform.position = Vector3.Lerp(startMarker.position, endMarker.position, fracJourney);
         }
@@ -63,6 +56,6 @@ public class MovingCam_FT : MonoBehaviour {
 
     void Rotate() {
         Quaternion target = Quaternion.Euler(0, 0, 0);
-        transform.rotation = Quaternion.Slerp(transform.rotation, target, Time.deltaTime * rotate_speed);
+        transform.rotation = Quaternion.Slerp(transform.rotation, target, Time.deltaTime * phase2_speed);
     }
 }

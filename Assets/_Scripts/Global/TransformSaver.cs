@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿#if UNITY_EDITOR
+using UnityEngine;
 using UnityEditor;
 using System.Collections;
 
@@ -93,11 +94,12 @@ public class TransformSaver : ScriptableObject
 
             if (foundPot != null)
             {
-                transform.localPosition = foundPot.position;              
+                transform.localPosition = foundPot.position;
                 numberApplied++;
             }
         }
 
         EditorUtility.DisplayDialog("Transform Saver Apply", "Applied " + numberApplied + " Transforms successfully out of " + transformSaves.Count + " possible.", "OK", "");
     }
-}
+} 
+#endif

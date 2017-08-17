@@ -27,6 +27,7 @@ public class BookController_FT : MonoBehaviour {
     //Maximum content page
     public int max_page = 10;
     public int current_page = 0;
+    private bool isStartStoryTellScence = false;
 
     //Book Material
     public Material PageBlankMat;
@@ -91,8 +92,10 @@ public class BookController_FT : MonoBehaviour {
         {
             Transform leftContent = transform.Find("Content/Page" + i + "/left");
             Transform rightContent = transform.Find("Content/Page" + i + "/right");
+            Transform staticContent = transform.Find("Content/Page" + i + "/static");
             int leftChildCount = leftContent.childCount;
             int rightChildCount = rightContent.childCount;
+            int staticChildCount = staticContent.childCount;
 
             for(int j = 0; j < leftChildCount; j++)
             {
@@ -146,14 +149,14 @@ public class BookController_FT : MonoBehaviour {
                 {
                     if(child.localPosition.z >= 0) {
                         Vector3 rot = child.localRotation.eulerAngles;
-                        rot = new Vector3(-90, 0, 0);
+                        rot = new Vector3(-90, rot.y, rot.z);
                         child.localRotation = Quaternion.Euler(rot);
                         child.gameObject.GetComponent<AnimatorBookObject>().rotateTo.currentAngle = rot;
                     }
                     else
                     {
                         Vector3 rot = child.localRotation.eulerAngles;
-                        rot = new Vector3(90, 0, 0);
+                        rot = new Vector3(90, rot.y, rot.z);
                         child.localRotation = Quaternion.Euler(rot);
                         child.gameObject.GetComponent<AnimatorBookObject>().rotateTo.currentAngle = rot;
                     }
@@ -210,20 +213,81 @@ public class BookController_FT : MonoBehaviour {
                     if (child.localPosition.z >= 0)
                     {
                         Vector3 rot = child.localRotation.eulerAngles;
-                        rot = new Vector3(-91, 0, 0);
+                        rot = new Vector3(-91, rot.y, rot.z);
                         child.localRotation = Quaternion.Euler(rot);
                         child.gameObject.GetComponent<AnimatorBookObject>().rotateTo.currentAngle = rot;
                     }
                     else
                     {
                         Vector3 rot = child.localRotation.eulerAngles;
-                        rot = new Vector3(91, 0, 0);
+                        rot = new Vector3(91, rot.y, rot.z);
                         child.localRotation = Quaternion.Euler(rot);
                         child.gameObject.GetComponent<AnimatorBookObject>().rotateTo.currentAngle = rot;
                     }
 
                     child.localScale = new Vector3(0, 0, 0);
                 }
+            }
+
+            for (int j = 0; j < staticChildCount; j++)
+            {
+                Transform child = staticContent.GetChild(0);
+                Vector3 localPosition = child.transform.localPosition;
+                Vector3 localRotation = child.transform.localRotation.eulerAngles;
+                Vector3 localScale = child.transform.localScale;
+                switch (i)
+                {
+                    case 1:
+                        child.parent = transform.Find("StaticContent/Page1");
+                        break;
+                    case 2:
+                        child.parent = transform.Find("StaticContent/Page2");
+                        break;
+                    case 3:
+                        child.parent = transform.Find("StaticContent/Page3");
+                        break;
+                    case 4:
+                        child.parent = transform.Find("StaticContent/Page4");
+                        break;
+                    case 5:
+                        child.parent = transform.Find("StaticContent/Page5");
+                        break;
+                    case 6:
+                        child.parent = transform.Find("StaticContent/Page6");
+                        break;
+                    case 7:
+                        child.parent = transform.Find("StaticContent/Page7");
+                        break;
+                    case 8:
+                        child.parent = transform.Find("StaticContent/Page8");
+                        break;
+                    case 9:
+                        child.parent = transform.Find("StaticContent/Page9");
+                        break;
+                    case 10:
+                        child.parent = transform.Find("StaticContent/Page10");
+                        break;
+                }
+                child.transform.localPosition = localPosition;
+                child.transform.localRotation = Quaternion.Euler(localRotation);
+                child.transform.localScale = localScale;
+                             
+                if (child.localPosition.z >= 0)
+                {
+                    Vector3 rot = child.localRotation.eulerAngles;
+                    rot = new Vector3(-90, rot.y, rot.z);
+                    child.localRotation = Quaternion.Euler(rot);
+                    child.gameObject.GetComponent<AnimatorBookObject>().rotateTo.currentAngle = rot;
+                }
+                else
+                {
+                    Vector3 rot = child.localRotation.eulerAngles;
+                    rot = new Vector3(90, rot.y, rot.z);
+                    child.localRotation = Quaternion.Euler(rot);
+                    child.gameObject.GetComponent<AnimatorBookObject>().rotateTo.currentAngle = rot;
+                }
+
+                child.localScale = new Vector3(0, 0, 0);              
             }
         }      
     }
@@ -244,10 +308,11 @@ public class BookController_FT : MonoBehaviour {
             StartCoroutine(nextPage(current_page));
 
             //Start Story Tell Scence
-            if (current_page == 1)
+            if (!isStartStoryTellScence)
             {
                 Scence.GetComponent<ScenceController_FT>().StartStoryTellScence();
                 dialog.ExecuteBlock("HideNarrator");
+                isStartStoryTellScence = true;
             }
         }       
         else if(current_page == max_page)
@@ -364,6 +429,48 @@ public class BookController_FT : MonoBehaviour {
         pageSke[2] = left_curPageSke;
         pageSke[3] = right_curPageSke;
         return pageSke;
+    }
+
+    GameObject getStaticContent(int current_page)
+    {
+        GameObject staticContent = null;        
+        switch (current_page)
+        {
+            case 1:
+                staticContent = transform.Find("StaticContent/Page1").gameObject;
+                break;
+            case 2:
+                staticContent = transform.Find("StaticContent/Page2").gameObject;
+                break;
+            case 3:
+                staticContent = transform.Find("StaticContent/Page3").gameObject;
+                break;
+            case 4:
+                staticContent = transform.Find("StaticContent/Page4").gameObject;
+                break;
+            case 5:
+                staticContent = transform.Find("StaticContent/Page5").gameObject;
+                break;
+            case 6:
+                staticContent = transform.Find("StaticContent/Page6").gameObject;
+                break;
+            case 7:
+                staticContent = transform.Find("StaticContent/Page7").gameObject;
+                break;
+            case 8:
+                staticContent = transform.Find("StaticContent/Page8").gameObject;
+                break;
+            case 9:
+                staticContent = transform.Find("StaticContent/Page9").gameObject;
+                break;
+            case 10:
+                staticContent = transform.Find("StaticContent/Page10").gameObject;
+                break;
+            default:
+                break;
+        }     
+                
+        return staticContent;
     }
 
     Material[] getMaterial(int current_page)
@@ -686,6 +793,18 @@ public class BookController_FT : MonoBehaviour {
                 for (int i = 0; i < child.Length; i++)
                     child[i].Play();
             }
+            if (getStaticContent(current_page - 1) != null)
+            {
+                AnimatorBookObject[] child = getStaticContent(current_page - 1).GetComponentsInChildren<AnimatorBookObject>();
+                for (int i = 0; i < child.Length; i++)
+                    child[i].PlayReverse();
+            }
+            if (getStaticContent(current_page) != null)
+            {
+                AnimatorBookObject[] child = getStaticContent(current_page).GetComponentsInChildren<AnimatorBookObject>();
+                for (int i = 0; i < child.Length; i++)
+                    child[i].Play();
+            }
             do
             {                
                 yield return null;
@@ -726,7 +845,7 @@ public class BookController_FT : MonoBehaviour {
         //Play animation pre page
         Animation animation = GetComponent<Animation>();
         string ani = "closePage" + current_page;
-        animation[ani].speed = 1.5f;       
+        animation[ani].speed = BookSpeed;       
         animation.Play(ani);
         isAnimationPlay = true;
 
@@ -796,6 +915,18 @@ public class BookController_FT : MonoBehaviour {
                 AnimatorBookObject[] child = getPageSke(current_page)[3].GetComponentsInChildren<AnimatorBookObject>();
                 for (int i = 0; i < child.Length; i++)
                     child[i].PlayReverse();
+            }
+            if (getStaticContent(current_page) != null)
+            {
+                AnimatorBookObject[] child = getStaticContent(current_page).GetComponentsInChildren<AnimatorBookObject>();
+                for (int i = 0; i < child.Length; i++)
+                    child[i].PlayReverse();
+            }
+            if (getStaticContent(current_page - 1) != null)
+            {
+                AnimatorBookObject[] child = getStaticContent(current_page - 1).GetComponentsInChildren<AnimatorBookObject>();
+                for (int i = 0; i < child.Length; i++)
+                    child[i].Play();
             }
             do
             {
