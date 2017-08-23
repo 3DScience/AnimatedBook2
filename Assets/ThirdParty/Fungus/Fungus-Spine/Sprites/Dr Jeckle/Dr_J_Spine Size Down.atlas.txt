@@ -1,0 +1,384 @@
+
+Dr_J_Spine Size Down.png
+size: 1024,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+H_Hair_Back
+  rotate: true
+  xy: 734, 461
+  size: 49, 130
+  orig: 49, 130
+  offset: 0, 0
+  index: -1
+H_Hair_Front
+  rotate: false
+  xy: 104, 338
+  size: 119, 172
+  orig: 119, 172
+  offset: 0, 0
+  index: -1
+H_L_Ear
+  rotate: true
+  xy: 503, 399
+  size: 26, 42
+  orig: 26, 42
+  offset: 0, 0
+  index: -1
+H_L_Elbow
+  rotate: false
+  xy: 376, 168
+  size: 36, 36
+  orig: 36, 36
+  offset: 0, 0
+  index: -1
+H_L_Hand
+  rotate: true
+  xy: 104, 231
+  size: 105, 119
+  orig: 105, 119
+  offset: 0, 0
+  index: -1
+H_L_Leg lower
+  rotate: true
+  xy: 2, 2
+  size: 46, 228
+  orig: 46, 228
+  offset: 0, 0
+  index: -1
+H_L_Shoulder
+  rotate: false
+  xy: 503, 427
+  size: 44, 43
+  orig: 44, 43
+  offset: 0, 0
+  index: -1
+H_L_foot
+  rotate: false
+  xy: 202, 78
+  size: 104, 71
+  orig: 104, 71
+  offset: 0, 0
+  index: -1
+H_Mouth
+  rotate: false
+  xy: 500, 369
+  size: 42, 28
+  orig: 42, 28
+  offset: 0, 0
+  index: -1
+H_Nose
+  rotate: false
+  xy: 988, 458
+  size: 28, 52
+  orig: 28, 52
+  offset: 0, 0
+  index: -1
+H_R_Ear
+  rotate: true
+  xy: 148, 71
+  size: 29, 46
+  orig: 29, 46
+  offset: 0, 0
+  index: -1
+H_R_Elbow
+  rotate: false
+  xy: 336, 168
+  size: 38, 36
+  orig: 38, 36
+  offset: 0, 0
+  index: -1
+H_R_Hand
+  rotate: false
+  xy: 341, 246
+  size: 119, 95
+  orig: 119, 95
+  offset: 0, 0
+  index: -1
+H_R_Leg lower
+  rotate: false
+  xy: 2, 50
+  size: 49, 229
+  orig: 49, 229
+  offset: 0, 0
+  index: -1
+H_R_Shoulder
+  rotate: false
+  xy: 926, 407
+  size: 44, 43
+  orig: 44, 43
+  offset: 0, 0
+  index: -1
+H_R_foot
+  rotate: false
+  xy: 202, 151
+  size: 100, 76
+  orig: 100, 76
+  offset: 0, 0
+  index: -1
+H_eye bags
+  rotate: false
+  xy: 926, 392
+  size: 35, 13
+  orig: 35, 13
+  offset: 0, 0
+  index: -1
+L eyebrows
+  rotate: false
+  xy: 90, 233
+  size: 12, 11
+  orig: 12, 11
+  offset: 0, 0
+  index: -1
+L_H_eyebrow
+  rotate: false
+  xy: 586, 392
+  size: 23, 31
+  orig: 23, 31
+  offset: 0, 0
+  index: -1
+R eyebrows
+  rotate: false
+  xy: 646, 425
+  size: 16, 14
+  orig: 16, 14
+  offset: 0, 0
+  index: -1
+R_H_eyebrow
+  rotate: true
+  xy: 414, 173
+  size: 31, 41
+  orig: 31, 41
+  offset: 0, 0
+  index: -1
+aaa
+  rotate: false
+  xy: 611, 413
+  size: 33, 26
+  orig: 33, 26
+  offset: 0, 0
+  index: -1
+arg
+  rotate: false
+  xy: 611, 390
+  size: 30, 21
+  orig: 30, 21
+  offset: 0, 0
+  index: -1
+belt
+  rotate: false
+  xy: 304, 167
+  size: 30, 60
+  orig: 30, 60
+  offset: 0, 0
+  index: -1
+blink angry
+  rotate: false
+  xy: 833, 452
+  size: 31, 7
+  orig: 31, 7
+  offset: 0, 0
+  index: -1
+blink normal
+  rotate: true
+  xy: 232, 17
+  size: 31, 6
+  orig: 31, 6
+  offset: 0, 0
+  index: -1
+eye bags
+  rotate: false
+  xy: 304, 154
+  size: 30, 11
+  orig: 30, 11
+  offset: 0, 0
+  index: -1
+forehead lines
+  rotate: false
+  xy: 500, 352
+  size: 33, 15
+  orig: 33, 15
+  offset: 0, 0
+  index: -1
+hair back
+  rotate: true
+  xy: 341, 206
+  size: 38, 123
+  orig: 38, 123
+  offset: 0, 0
+  index: -1
+hair front
+  rotate: false
+  xy: 225, 340
+  size: 110, 170
+  orig: 110, 170
+  offset: 0, 0
+  index: -1
+head
+  rotate: true
+  xy: 337, 401
+  size: 69, 164
+  orig: 69, 164
+  offset: 0, 0
+  index: -1
+left arm lower
+  rotate: true
+  xy: 337, 343
+  size: 56, 129
+  orig: 56, 129
+  offset: 0, 0
+  index: -1
+left arm upper
+  rotate: true
+  xy: 549, 441
+  size: 41, 122
+  orig: 41, 122
+  offset: 0, 0
+  index: -1
+left ear
+  rotate: true
+  xy: 544, 364
+  size: 28, 35
+  orig: 28, 35
+  offset: 0, 0
+  index: -1
+left foot
+  rotate: true
+  xy: 673, 379
+  size: 103, 59
+  orig: 103, 59
+  offset: 0, 0
+  index: -1
+left hand
+  rotate: true
+  xy: 866, 452
+  size: 58, 120
+  orig: 58, 120
+  offset: 0, 0
+  index: -1
+left leg lower
+  rotate: false
+  xy: 53, 71
+  size: 35, 208
+  orig: 35, 208
+  offset: 0, 0
+  index: -1
+left leg upper
+  rotate: true
+  xy: 53, 50
+  size: 19, 185
+  orig: 19, 185
+  offset: 0, 0
+  index: -1
+neck
+  rotate: true
+  xy: 549, 425
+  size: 14, 60
+  orig: 14, 60
+  offset: 0, 0
+  index: -1
+neck tie
+  rotate: true
+  xy: 468, 351
+  size: 48, 30
+  orig: 48, 30
+  offset: 0, 0
+  index: -1
+nerr
+  rotate: true
+  xy: 90, 246
+  size: 33, 12
+  orig: 33, 12
+  offset: 0, 0
+  index: -1
+nose
+  rotate: true
+  xy: 90, 76
+  size: 22, 52
+  orig: 22, 52
+  offset: 0, 0
+  index: -1
+ohh
+  rotate: true
+  xy: 734, 380
+  size: 9, 15
+  orig: 9, 15
+  offset: 0, 0
+  index: -1
+pupils
+  rotate: false
+  xy: 336, 155
+  size: 26, 11
+  orig: 26, 11
+  offset: 0, 0
+  index: -1
+right arm lower
+  rotate: false
+  xy: 90, 100
+  size: 56, 129
+  orig: 56, 129
+  offset: 0, 0
+  index: -1
+right arm upper
+  rotate: false
+  xy: 148, 102
+  size: 52, 127
+  orig: 52, 127
+  offset: 0, 0
+  index: -1
+right ear
+  rotate: true
+  xy: 547, 394
+  size: 29, 37
+  orig: 29, 37
+  offset: 0, 0
+  index: -1
+right foot
+  rotate: false
+  xy: 833, 391
+  size: 91, 59
+  orig: 91, 59
+  offset: 0, 0
+  index: -1
+right hand
+  rotate: true
+  xy: 734, 391
+  size: 68, 97
+  orig: 68, 97
+  offset: 0, 0
+  index: -1
+right leg lower
+  rotate: true
+  xy: 337, 472
+  size: 38, 210
+  orig: 38, 210
+  offset: 0, 0
+  index: -1
+right leg upper
+  rotate: true
+  xy: 549, 484
+  size: 26, 183
+  orig: 26, 183
+  offset: 0, 0
+  index: -1
+smile
+  rotate: true
+  xy: 972, 416
+  size: 34, 11
+  orig: 34, 11
+  offset: 0, 0
+  index: -1
+torso lower
+  rotate: false
+  xy: 225, 229
+  size: 114, 109
+  orig: 114, 109
+  offset: 0, 0
+  index: -1
+torso upper
+  rotate: false
+  xy: 2, 281
+  size: 100, 229
+  orig: 100, 229
+  offset: 0, 0
+  index: -1
