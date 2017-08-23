@@ -19,7 +19,7 @@ public class Book2DDetail : MonoBehaviour {
 	private string name;
 	private string picture_url;
 	private float price;
-	private int status;
+	private string status;
 	private string version;
 	private string assetbundle;
 	private string download_url;

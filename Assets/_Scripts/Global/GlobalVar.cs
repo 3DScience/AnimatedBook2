@@ -9,6 +9,7 @@ using System.IO;
 public class GlobalVar {
     public static bool DEBUG = false;
 	public static int login = 0;
+	public static string tester = "0";
     public static ShareContext shareContext;
     public static string DATA_PATH;
     public static string DB_PATH;
