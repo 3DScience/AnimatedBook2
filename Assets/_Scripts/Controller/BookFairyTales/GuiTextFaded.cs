@@ -7,10 +7,10 @@ public class GuiTextFaded : MonoBehaviour
     public float fade_speed = 1f;
     public bool loop = false;
 
-    private void Start()
-    {
-        PlayFade();
-    }
+    //private void Start()
+    //{
+    //    PlayFade();
+    //}
 
     // can ignore the update, it's just to make the coroutines get called for example
     //void Update()

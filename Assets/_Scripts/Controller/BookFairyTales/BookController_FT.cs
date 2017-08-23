@@ -6,7 +6,9 @@ using Fungus;
 
 public class BookController_FT : MonoBehaviour {
 
-    private Boolean isAnimationPlay = false;
+    private bool isAnimationPlay = false;
+    private bool isOpenOrClose = false;
+    private bool isBookOpen = false;
 
     //Scence Controller
     private GameObject Scence;
@@ -27,10 +29,12 @@ public class BookController_FT : MonoBehaviour {
     //Maximum content page
     public int max_page = 10;
     public int current_page = 0;
-    private bool isStartStoryTellScence = false;
+    private bool isStartViewScence = false;
 
     //Book Material
     public Material PageBlankMat;
+    public Material PageStartLeft;
+    public Material PageStartRight;
     public Material[] PageLeftMat;
     public Material[] PageRightMat;
     public Material[] PageFlipNextMat;
@@ -46,6 +50,7 @@ public class BookController_FT : MonoBehaviour {
 
     public bool UseAnimatorObject = false;
     public float BookSpeed = 1.0f;
+    public float AnimationSpeed = 1f;
 
     // Use this for initialization
     void Start () {
@@ -152,6 +157,8 @@ public class BookController_FT : MonoBehaviour {
                         rot = new Vector3(-90, rot.y, rot.z);
                         child.localRotation = Quaternion.Euler(rot);
                         child.gameObject.GetComponent<AnimatorBookObject>().rotateTo.currentAngle = rot;
+                        child.gameObject.GetComponent<AnimatorBookObject>().rotateTo.speed = child.gameObject.GetComponent<AnimatorBookObject>().rotateTo.speed * AnimationSpeed;
+                        child.gameObject.GetComponent<AnimatorBookObject>().scaleTo.speed = child.gameObject.GetComponent<AnimatorBookObject>().scaleTo.speed * AnimationSpeed;
                     }
                     else
                     {
@@ -159,6 +166,8 @@ public class BookController_FT : MonoBehaviour {
                         rot = new Vector3(90, rot.y, rot.z);
                         child.localRotation = Quaternion.Euler(rot);
                         child.gameObject.GetComponent<AnimatorBookObject>().rotateTo.currentAngle = rot;
+                        child.gameObject.GetComponent<AnimatorBookObject>().rotateTo.speed = child.gameObject.GetComponent<AnimatorBookObject>().rotateTo.speed * AnimationSpeed;
+                        child.gameObject.GetComponent<AnimatorBookObject>().scaleTo.speed = child.gameObject.GetComponent<AnimatorBookObject>().scaleTo.speed * AnimationSpeed;
                     }
 
                     child.localScale = new Vector3(0, 0, 0);
@@ -216,6 +225,8 @@ public class BookController_FT : MonoBehaviour {
                         rot = new Vector3(-91, rot.y, rot.z);
                         child.localRotation = Quaternion.Euler(rot);
                         child.gameObject.GetComponent<AnimatorBookObject>().rotateTo.currentAngle = rot;
+                        child.gameObject.GetComponent<AnimatorBookObject>().rotateTo.speed = child.gameObject.GetComponent<AnimatorBookObject>().rotateTo.speed * AnimationSpeed;
+                        child.gameObject.GetComponent<AnimatorBookObject>().scaleTo.speed = child.gameObject.GetComponent<AnimatorBookObject>().scaleTo.speed * AnimationSpeed;
                     }
                     else
                     {
@@ -223,6 +234,8 @@ public class BookController_FT : MonoBehaviour {
                         rot = new Vector3(91, rot.y, rot.z);
                         child.localRotation = Quaternion.Euler(rot);
                         child.gameObject.GetComponent<AnimatorBookObject>().rotateTo.currentAngle = rot;
+                        child.gameObject.GetComponent<AnimatorBookObject>().rotateTo.speed = child.gameObject.GetComponent<AnimatorBookObject>().rotateTo.speed * AnimationSpeed;
+                        child.gameObject.GetComponent<AnimatorBookObject>().scaleTo.speed = child.gameObject.GetComponent<AnimatorBookObject>().scaleTo.speed * AnimationSpeed;
                     }
 
                     child.localScale = new Vector3(0, 0, 0);
@@ -278,6 +291,8 @@ public class BookController_FT : MonoBehaviour {
                     rot = new Vector3(-90, rot.y, rot.z);
                     child.localRotation = Quaternion.Euler(rot);
                     child.gameObject.GetComponent<AnimatorBookObject>().rotateTo.currentAngle = rot;
+                    child.gameObject.GetComponent<AnimatorBookObject>().rotateTo.speed = child.gameObject.GetComponent<AnimatorBookObject>().rotateTo.speed * AnimationSpeed;
+                    child.gameObject.GetComponent<AnimatorBookObject>().scaleTo.speed = child.gameObject.GetComponent<AnimatorBookObject>().scaleTo.speed * AnimationSpeed;
                 }
                 else
                 {
@@ -285,6 +300,8 @@ public class BookController_FT : MonoBehaviour {
                     rot = new Vector3(90, rot.y, rot.z);
                     child.localRotation = Quaternion.Euler(rot);
                     child.gameObject.GetComponent<AnimatorBookObject>().rotateTo.currentAngle = rot;
+                    child.gameObject.GetComponent<AnimatorBookObject>().rotateTo.speed = child.gameObject.GetComponent<AnimatorBookObject>().rotateTo.speed * AnimationSpeed;
+                    child.gameObject.GetComponent<AnimatorBookObject>().scaleTo.speed = child.gameObject.GetComponent<AnimatorBookObject>().scaleTo.speed * AnimationSpeed;
                 }
 
                 child.localScale = new Vector3(0, 0, 0);              
@@ -299,33 +316,102 @@ public class BookController_FT : MonoBehaviour {
 
     public void open()
     {
-        GetComponent<Animation>().Play("openBook");
+        if(!isBookOpen) { 
+            StartCoroutine(openBookCoroutine());
+            StartCoroutine(playIntro());
+            topPageLeft.GetComponent<Renderer>().material = PageStartLeft;
+            topPageRight.GetComponent<Renderer>().material = PageStartRight;
+            if (GameObject.Find("UIPanel/TabToOpenText") != null) {
+                GameObject.Find("UIPanel/TabToOpenText").GetComponent<GuiTextFaded>().CancelFade();
+                GameObject.Find("UIPanel/TabToOpenText").SetActive(false);
+            }
+        }
+    }
+
+    public void close()
+    {               
+        InvokeRepeating("ClearBGTexture", 0f, 0.03F);        
+        StartCoroutine(closeBookCoroutine());
+    }
+
+    private IEnumerator openBookCoroutine()
+    {       
+        Animation animation = GetComponent<Animation>();
+        string ani = "openBook";
+        animation[ani].speed = BookSpeed * 3 / 4;
+        animation.Play(ani);
+        isOpenOrClose = true;
+        isBookOpen = true;
+        
+        do
+        {          
+            yield return null;
+        } while (animation.isPlaying);
+
+        isOpenOrClose = false;
+             
+        onNextPageClick();
+    }
+
+    private IEnumerator playIntro()
+    {
+        yield return new WaitForSeconds(1);
+        if(GetComponent<AudioSource>() != null)
+            GetComponent<AudioSource>().Play();
+    }
+
+    private IEnumerator closeBookCoroutine()
+    {
+        isOpenOrClose = true;       
+        yield return new WaitForSeconds(1.5f);
+       
+        Scence.GetComponent<ScenceController_FT>().RestartScence();       
+
+        Animation animation = GetComponent<Animation>();
+        string ani = "closeBook";
+        animation[ani].speed = BookSpeed * 3 / 4;
+        animation.Play(ani);       
+
+        do
+        {
+            yield return null;
+        } while (animation.isPlaying);
+
+        current_page = 0;
+        isOpenOrClose = false;
+        isBookOpen = false;        
+        isStartViewScence = false;
     }
 
     public void onNextPageClick()
     {    
-        if (current_page < max_page && !isAnimationPlay) { 
-            StartCoroutine(nextPage(current_page));
+        if(isBookOpen) { 
+            if (current_page < max_page && !isAnimationPlay && !isOpenOrClose) { 
+                StartCoroutine(nextPage(current_page));
 
-            //Start Story Tell Scence
-            if (!isStartStoryTellScence)
-            {
-                Scence.GetComponent<ScenceController_FT>().StartStoryTellScence();
-                dialog.ExecuteBlock("HideNarrator");
-                isStartStoryTellScence = true;
+                //Start Story Tell Scence
+                if (!isStartViewScence)
+                {
+                    Scence.GetComponent<ScenceController_FT>().StartViewScence();       
+                    isStartViewScence = true;
+                }
+            }       
+            else if(current_page == max_page && !isAnimationPlay && !isOpenOrClose) {                
+                close();
             }
-        }       
-        else if(current_page == max_page)
-            dialog.ExecuteBlock("EndScence");
+        }
+        else
+        {
+            if (!isOpenOrClose) {
+                open();                
+            }
+        }
     }
 
     public void onPrePageClick()
     {       
-        if (current_page > 1 && !isAnimationPlay)
-            StartCoroutine(prePage(current_page));
-
-        if(current_page == max_page)
-            dialog.ExecuteBlock("HideNarrator2");
+        if (current_page > 1 && !isAnimationPlay && !isOpenOrClose)
+            StartCoroutine(prePage(current_page));       
     }
 
     GameObject getFlipPage(int current_page)
@@ -479,7 +565,7 @@ public class BookController_FT : MonoBehaviour {
         Material bookLeftMat = PageBlankMat;
         Material bookRightMat = PageBlankMat;
         Material pageFlipNextMat = null;
-        Material BGPlaneMat = PageBlankMat;
+        Material BGPlaneMat = null;
         Material pageFlipPreMat = PageBlankMat;
 
         try
@@ -728,7 +814,7 @@ public class BookController_FT : MonoBehaviour {
         string ani = "openPage" + current_page;
         animation[ani].speed = BookSpeed;
         animation.Play(ani);
-        isAnimationPlay = true;
+        isAnimationPlay = true;      
 
         //Disable all Effect
         disableAllEffect();
@@ -738,7 +824,11 @@ public class BookController_FT : MonoBehaviour {
 
         //Hide current Background texture
         InvokeRepeating("HideBGTexture", 0f, 0.03F);
-       
+
+        //Stop excuted dialog
+        if (dialog.FindBlock("Scence" + (current_page - 1)) != null)
+            dialog.FindBlock("Scence" + (current_page - 1)).Stop();
+
         //Set active current page
         getFlipPage(current_page).SetActive(true);
         getFlipPage(current_page).GetComponent<Renderer>().material = getMaterial(current_page)[2];      
@@ -837,7 +927,11 @@ public class BookController_FT : MonoBehaviour {
         //Deactive current flip page
         getFlipPage(current_page).SetActive(false);
 
-        dialog.ExecuteBlock("Scence" + current_page);
+        if(dialog.FindBlock("Scence" + current_page) != null)
+            dialog.ExecuteBlock("Scence" + current_page);
+
+        if (current_page == max_page)
+            close();
     }
 
     private IEnumerator prePage(int current_page)
@@ -857,6 +951,10 @@ public class BookController_FT : MonoBehaviour {
 
         //Hide current Background texture
         InvokeRepeating("HideBGPrePageTexture", 0f, 0.03F);
+
+        //Stop excuted dialog
+        if (dialog.FindBlock("Scence" + (current_page)) != null)
+            dialog.FindBlock("Scence" + (current_page)).Stop();
 
         //Set active current page
         getFlipPage(current_page).SetActive(true);
@@ -967,22 +1065,21 @@ public class BookController_FT : MonoBehaviour {
         this.current_page = current_page;
         Debug.Log("Page " + current_page + " playing!");
 
-        dialog.ExecuteBlock("Scence" + current_page);
+        if (dialog.FindBlock("Scence" + (current_page)) != null)
+            dialog.ExecuteBlock("Scence" + current_page);
     }
 
-    private void HideBGTexture()
+    private void ClearBGTexture()
     {
         try
-        { 
+        {
             float dissolveLevel = BGPlane.GetComponent<Renderer>().material.GetFloat("_Level");
-            if(dissolveLevel < 1)        
+            if (dissolveLevel < 1)
                 BGPlane.GetComponent<Renderer>().material.SetFloat("_Level", dissolveLevel + 0.02F);
-            else { 
+            else
+            {
                 BGPlane.GetComponent<Renderer>().material.SetFloat("_Level", 1F);
-                CancelInvoke("HideBGTexture");
-                BGPlane.GetComponent<Renderer>().material = getMaterial(current_page)[3];
-                BGPlane.GetComponent<Renderer>().material.SetFloat("_Level", 1F);
-                InvokeRepeating("DissolveBGTexture", 0f, 0.03F);
+                CancelInvoke("ClearBGTexture");               
             }
         }
         catch (Exception e)
@@ -990,6 +1087,32 @@ public class BookController_FT : MonoBehaviour {
             Debug.Log("BG material is missing or does not have dissolve level component!");
             BGPlane.SetActive(false);
         }
+    }
+
+    private void HideBGTexture()
+    {
+        if(getMaterial(current_page)[3] != null) { 
+            try
+            { 
+                float dissolveLevel = BGPlane.GetComponent<Renderer>().material.GetFloat("_Level");
+                if(dissolveLevel < 1)        
+                    BGPlane.GetComponent<Renderer>().material.SetFloat("_Level", dissolveLevel + 0.02F);
+                else { 
+                    BGPlane.GetComponent<Renderer>().material.SetFloat("_Level", 1F);
+                    CancelInvoke("HideBGTexture");
+                    BGPlane.GetComponent<Renderer>().material = getMaterial(current_page)[3];
+                    BGPlane.GetComponent<Renderer>().material.SetFloat("_Level", 1F);
+                    InvokeRepeating("DissolveBGTexture", 0f, 0.03F);
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.Log("BG material is missing or does not have dissolve level component!");
+                BGPlane.SetActive(false);
+            }
+        }
+        else
+            CancelInvoke("HideBGTexture");
     }
 
     private void HideBGPrePageTexture()
@@ -1003,7 +1126,7 @@ public class BookController_FT : MonoBehaviour {
             {
                 BGPlane.GetComponent<Renderer>().material.SetFloat("_Level", 1F);
                 CancelInvoke("HideBGPrePageTexture");
-                BGPlane.GetComponent<Renderer>().material = getMaterial(current_page-1)[3];
+                BGPlane.GetComponent<Renderer>().material = getMaterial(current_page)[3];
                 BGPlane.GetComponent<Renderer>().material.SetFloat("_Level", 1F);
                 InvokeRepeating("DissolveBGTexture", 0f, 0.03F);
             }
