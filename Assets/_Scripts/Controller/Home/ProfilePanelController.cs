@@ -40,7 +40,7 @@ public class ProfilePanelController : MonoBehaviour
 			} else {
 				txtEmail.text = ProfileFirebase.getInstance ().auth.CurrentUser.UserId;
 			}
-			DebugOnScreen.Log("ProfilePanelController- OnLoginStateChange, txtEmail.text 111 = "+ txtEmail.text);
+			//DebugOnScreen.Log("ProfilePanelController- OnLoginStateChange, txtEmail.text 111 = "+ txtEmail.text);
 			GlobalVar.tester = "0";
 			FirebaseDatabase.DefaultInstance.RootReference.Child ("private")
 				.Child ("userInfo").Child (ProfileFirebase.getInstance ().auth.CurrentUser.UserId).GetValueAsync ().ContinueWith (taskValue => {
@@ -57,7 +57,6 @@ public class ProfilePanelController : MonoBehaviour
         }else
         {
             txtEmail.text = "";
-			//DebugOnScreen.Log("ProfilePanelController- OnLoginStateChange, txtEmail.text 222 = "+ txtEmail.text);
         }
     }
 

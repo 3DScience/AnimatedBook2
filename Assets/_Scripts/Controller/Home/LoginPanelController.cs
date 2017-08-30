@@ -23,6 +23,9 @@ public class LoginPanelController : MonoBehaviour {
     public Text txtError;
     public GameObject loadingPanel;
 
+	private FirebaseUser userInfo;
+	private const string USERSINFO = "userInfo";
+
     void OnEnable()
     {
 
@@ -82,13 +85,31 @@ public class LoginPanelController : MonoBehaviour {
 
 	public void OnLoginButtonGuestClick()
 	{
-			if (GlobalVar.DEBUG)
-				DebugOnScreen.Log ("OnLoginButtonGuestClick");
-			ProfileFirebase.getInstance ().loginAsAnnonymousUser (userInfo => {
-				DebugOnScreen.Log("OnLoginButtonGuestClick- loginAsAnnonymousUser :: " +userInfo.userID);
-				deactiveLoginPanel();
-			});
+//			if (GlobalVar.DEBUG)
+//				DebugOnScreen.Log ("OnLoginButtonGuestClick");
+//			ProfileFirebase.getInstance ().loginAsAnnonymousUser (userInfo => {
+//				DebugOnScreen.Log("OnLoginButtonGuestClick- loginAsAnnonymousUser :: " +userInfo.userID);
+//				deactiveLoginPanel();
+//			});
 
+		DebugOnScreen.Log("Click guest login 1:: ");
+
+		FirebaseDatabase.DefaultInstance.RootReference.Child("private")
+			.Child(USERSINFO).Child("guest").GetValueAsync().ContinueWith(taskguest => {
+				if (taskguest.IsFaulted)
+				{
+					DebugOnScreen.Log("tester Fuck 0:: " + GlobalVar.tester);
+				}
+				else if (taskguest.IsCompleted)
+				{
+					DataSnapshot snapshot = taskguest.Result;
+					GlobalVar.tester = snapshot.Child("tester").Value.ToString();
+					DebugOnScreen.Log("tester Fuck 1:: " + GlobalVar.tester);
+				}
+				DebugOnScreen.Log("Click guest login:: FUCKING HELL");
+			});
+		
+		deactiveLoginPanel();
 	}
 
 	void HandleAction (UserInfo obj)
@@ -133,10 +154,7 @@ public class LoginPanelController : MonoBehaviour {
 			Debug.Log("User cancelled login");
 		}
 	}
-
-	private FirebaseUser userInfo;
-	private FirebaseUser a;
-	private const string USERSINFO = "userInfo";
+		
 	void HandleSigninResult(Task<Firebase.Auth.FirebaseUser> authTask)
     {
 

@@ -16,11 +16,11 @@ public class HomeScript : MonoBehaviour {
             GlobalVar.SETTING_DIALOG = GameObject.Instantiate(settingDialogPrefab);
         }
 		if (GlobalVar.login == 2) {
-			DebugOnScreen.Log("Home : " + GlobalVar.login);
+			//DebugOnScreen.Log("Home : " + GlobalVar.login);
 			uiLogin.SetActive(true);
 			//GameObject.Instantiate (uiLogin);
 		} else if (GlobalVar.login == 1) {
-			DebugOnScreen.Log("Home : " + GlobalVar.login);
+			//DebugOnScreen.Log("Home : " + GlobalVar.login);
 			//GameObject.DestroyObject (uiLogin);
 			uiLogin.SetActive(false);
 		}
