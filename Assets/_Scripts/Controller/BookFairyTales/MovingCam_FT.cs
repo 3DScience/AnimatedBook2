@@ -3,28 +3,20 @@ using System.Collections;
 
 public class MovingCam_FT : MonoBehaviour {
 	
-	public Transform startScence;
-	//public Transform endScenceMarker;
-    //public Transform startStoryTellScenceMarker;
+	public Transform startScence;	
     public Transform viewScence;
   
-    public float speed = 1F;
-
-    //private float startTime;
-	//private float journeyLength;
+    public float speed = 1F; 
 
     private bool isStartScence = false;
-    private bool isStoryTellScence = false;   
+    private bool isViewScence = false;   
 
     void Start() {
         //transform.LookAt(GameObject.Find("Book").transform);
 	}
 
-	void Update() {
-        //if(isStartScence)   
-        //    Move(startScence, endScenceMarker);
-
-        if (isStoryTellScence) {
+	void Update() {   
+        if (isViewScence) {
             transform.rotation = Quaternion.Lerp(transform.rotation, viewScence.rotation, Time.deltaTime * speed);
             transform.position = Vector3.Lerp(transform.position, viewScence.position, Time.deltaTime * speed);
         }
@@ -36,36 +28,42 @@ public class MovingCam_FT : MonoBehaviour {
         }
     }
 
-    //public void StartScence()
-    //{
-    //    startTime = Time.time;
-    //    journeyLength = Vector3.Distance(startScence.position, endScenceMarker.position);
-    //    isStartScence = true;
-    //}
 
     public void GoToViewScence()
     {
         isStartScence = false;
-        isStoryTellScence = true;       
+        isViewScence = true;
+        GetComponent<DraggableCamera>().cancelDraggable();
+
+        StartCoroutine(startDraggable());
+    }
+
+    public void RestartViewScence()
+    {        
+        if(isViewScence) { 
+            GetComponent<DraggableCamera>().cancelDraggable();
+            speed = speed * 4;
+            StartCoroutine(restartDraggable());
+        }
     }
 
     public void GoToStartScence()
     {
         isStartScence = true;
-        isStoryTellScence = false;
+        isViewScence = false;
+        GetComponent<DraggableCamera>().cancelDraggable();
     }
 
-    //void Move(Transform startMarker, Transform endMarker)
-    //{
-    //    if(startMarker != null && endMarker != null) {
-    //        float distCovered = (Time.time - startTime) * phase1_speed;
-    //        float fracJourney = distCovered / journeyLength;
-    //        transform.position = Vector3.Lerp(startMarker.position, endMarker.position, fracJourney);
-    //    }
-    //}
+    IEnumerator startDraggable()
+    {
+        yield return new WaitForSeconds(5f);
+        GetComponent<DraggableCamera>().startDraggable();
+    }
 
-    //void Rotate() {
-    //    Quaternion target = Quaternion.Euler(0, 0, 0);
-    //    transform.rotation = Quaternion.Slerp(transform.rotation, target, Time.deltaTime * speed);
-    //}
+    IEnumerator restartDraggable()
+    {
+        yield return new WaitForSeconds(2f);
+        GetComponent<DraggableCamera>().startDraggable();
+        speed = speed / 4;
+    } 
 }

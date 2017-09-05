@@ -8,34 +8,34 @@ public class DebugOnScreen : MonoBehaviour {
     static int i;
     void OnGUI()
     {
-        if (msg)
-        {
+        //if (msg)
+        //{
             
-            scrollPos = GUILayout.BeginScrollView(scrollPos, GUILayout.Width(Screen.width-50), GUILayout.Height(Screen.height-50));
-            GUIStyle gui = new GUIStyle();
-            gui.fontSize = 30;
-            gui.wordWrap = true;
-            gui.normal.textColor = Color.red;
-            // string text = System.IO.File.ReadAllText("D:/ping.bat");
-            GUILayout.Label( msgStr, gui);
-            GUILayout.EndScrollView();
-            scrollPos.y = Mathf.Infinity;
-        }
+        //    scrollPos = GUILayout.BeginScrollView(scrollPos, GUILayout.Width(Screen.width-50), GUILayout.Height(Screen.height-50));
+        //    GUIStyle gui = new GUIStyle();
+        //    gui.fontSize = 30;
+        //    gui.wordWrap = true;
+        //    gui.normal.textColor = Color.red;
+        //    // string text = System.IO.File.ReadAllText("D:/ping.bat");
+        //    GUILayout.Label( msgStr, gui);
+        //    GUILayout.EndScrollView();
+        //    scrollPos.y = Mathf.Infinity;
+        //}
     }
     public static void Log(string str)
     {
-        if(GlobalVar.shareContext.gameObject.GetComponent<DebugOnScreen>()==null)
-        {
-            GlobalVar.shareContext.gameObject.AddComponent<DebugOnScreen>();
-        }
-        msg = true;
-        msgStr =msgStr+"\n"+i+".    "+str ;
-        i++;
+        //if(GlobalVar.shareContext.gameObject.GetComponent<DebugOnScreen>()==null)
+        //{
+        //    GlobalVar.shareContext.gameObject.AddComponent<DebugOnScreen>();
+        //}
+        //msg = true;
+        //msgStr =msgStr+"\n"+i+".    "+str ;
+        //i++;
     }
     public void UnLog()
     {
 
-        msg = false;
+        //msg = false;
     }
 
 }

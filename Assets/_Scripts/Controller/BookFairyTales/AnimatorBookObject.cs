@@ -41,30 +41,59 @@ public class AnimatorBookObject : MonoBehaviour {
         public bool isBouncing = false;
         public float bounceRange = 0.2f;
         [Header("This is need for decrease scale setting when reverse")]
+        public bool reverseDelay = true;
         public Vector3 reverseScale = new Vector3(0, 0, 0);
 
         public bool isScaleUp { get; set; }
         public int bounceState { get; set; }
         public Vector3 originalScale { get; set; }
     }
+    
+    [System.Serializable]
+    public class Fade
+    {
+        [Header("Use for sprite")]
+        public bool isFade = false;
+        public float speed = 1.0f;
+        public float delay = 0;
+    }
+
+    [System.Serializable]
+    public class Dissolve
+    {
+        [Header("Use for plane with dissolve texture")]
+        public bool isDissolve = false;
+        public float speed = 1.0f;
+        public float delay = 0;
+    }
     #endregion
 
-    public bool isPlayTest = false;
+    public bool playTest = false;
+    public bool flipObject = true;
+
     public MoveTo moveTo = new MoveTo();
     public RotateTo rotateTo = new RotateTo();
     public ScaleTo scaleTo = new ScaleTo();
-        
+    public Fade fade = new Fade();
+    public Dissolve dissolve = new Dissolve();
+
+    private Coroutine move_coroutine;
+    private Coroutine rotate_coroutine;
+    private Coroutine scale_coroutine;   
+    private Coroutine fade_coroutine;
+    private Coroutine dissolve_coroutine;
+
     void Start () {
-        if (isPlayTest)
+        if (playTest)
             Play();
     }
 
     void Update()
     {
-        if (isPlayTest)
+        if (playTest)
         {
             Play();
-            isPlayTest = false;
+            playTest = false;
         }
     }
 
@@ -77,6 +106,10 @@ public class AnimatorBookObject : MonoBehaviour {
             Rotate();
         if (scaleTo.isScale)
             Scale();
+        if (fade.isFade)
+            FadeIn();
+        if (dissolve.isDissolve)
+            DissolveIn();
     }
 
     public void PlayReverse()
@@ -87,6 +120,10 @@ public class AnimatorBookObject : MonoBehaviour {
             ReverseRotate();
         if (scaleTo.isScale)
             ReverseScale();
+        if (fade.isFade)
+            FadeOut();
+        if (dissolve.isDissolve)
+            DissolveOut();
     }   
     #endregion
 
@@ -94,7 +131,10 @@ public class AnimatorBookObject : MonoBehaviour {
     public void Move()
     {
         moveTo.originalPosition = transform.localPosition;
-        StartCoroutine(Move_Coroutine(moveTo.newPosition));
+
+        if (move_coroutine != null)
+            StopCoroutine(move_coroutine);
+        move_coroutine = StartCoroutine(Move_Coroutine(moveTo.newPosition));
     }
 
     IEnumerator Move_Coroutine(Vector3 newPosition)
@@ -115,8 +155,10 @@ public class AnimatorBookObject : MonoBehaviour {
     }
 
     public void ReverseMove()
-    {       
-        StartCoroutine(Move_Coroutine(moveTo.originalPosition));
+    {
+        if (move_coroutine != null)
+            StopCoroutine(move_coroutine);
+        move_coroutine = StartCoroutine(Move_Coroutine(moveTo.originalPosition));
     }
     #endregion
 
@@ -125,8 +167,11 @@ public class AnimatorBookObject : MonoBehaviour {
     {
         rotateTo.changeAngle = 0;
         if(rotateTo.currentAngle == null)
-            rotateTo.currentAngle = new Vector3(transform.localEulerAngles.x, 0, 0);        
-        StartCoroutine(Rotate_Coroutine(rotateTo.angle));    
+            rotateTo.currentAngle = new Vector3(transform.localEulerAngles.x, 0, 0);
+
+        if (rotate_coroutine != null)
+            StopCoroutine(rotate_coroutine);
+        rotate_coroutine = StartCoroutine(Rotate_Coroutine(rotateTo.angle));    
     }
 
     IEnumerator Rotate_Coroutine(float angle)
@@ -223,8 +268,11 @@ public class AnimatorBookObject : MonoBehaviour {
     {
         rotateTo.changeAngle = 0;
         if (rotateTo.currentAngle == null)
-            rotateTo.currentAngle = new Vector3(transform.localEulerAngles.x, 0, 0);              
-        StartCoroutine(ReverseRotate_Coroutine(-rotateTo.angle));      
+            rotateTo.currentAngle = new Vector3(transform.localEulerAngles.x, 0, 0);
+
+        if (rotate_coroutine != null)
+            StopCoroutine(rotate_coroutine);
+        rotate_coroutine = StartCoroutine(ReverseRotate_Coroutine(-rotateTo.angle));      
     }   
     #endregion
 
@@ -238,12 +286,14 @@ public class AnimatorBookObject : MonoBehaviour {
         else
             scaleTo.isScaleUp = true;
 
-        StartCoroutine(Scale_Coroutine(scaleTo.newScale));
+        if (scale_coroutine != null)
+            StopCoroutine(scale_coroutine);
+        scale_coroutine = StartCoroutine(Scale_Coroutine(scaleTo.newScale, true));
     }
 
-    IEnumerator Scale_Coroutine(Vector3 newScale)
+    IEnumerator Scale_Coroutine(Vector3 newScale, bool isDelay)
     {       
-        if (scaleTo.delay != 0)
+        if (scaleTo.delay != 0 && isDelay)
             yield return new WaitForSeconds(scaleTo.delay);
 
         if (scaleTo.isScaleUp)
@@ -256,7 +306,7 @@ public class AnimatorBookObject : MonoBehaviour {
                 yield return null;
             }
 
-        else
+        else       
             while (transform.localScale.x > newScale.x)
             {
                 float constant_scale = 0.1f;
@@ -264,7 +314,7 @@ public class AnimatorBookObject : MonoBehaviour {
                 currentScale -= new Vector3(constant_scale * scaleTo.speed, constant_scale * scaleTo.speed, constant_scale * scaleTo.speed);
                 transform.localScale = currentScale;
                 yield return null;
-            }
+            }        
 
         if (scaleTo.isScaleUp && scaleTo.isBouncing)
         {
@@ -324,7 +374,103 @@ public class AnimatorBookObject : MonoBehaviour {
         else
             scaleTo.isScaleUp = true;
 
-        StartCoroutine(Scale_Coroutine(scaleTo.reverseScale));
+        if (scale_coroutine != null)
+            StopCoroutine(scale_coroutine);
+        scale_coroutine = StartCoroutine(Scale_Coroutine(scaleTo.reverseScale, scaleTo.reverseDelay));
+    }
+    #endregion
+
+    #region Fade Object Function
+    public void FadeIn()
+    {
+        if (fade_coroutine != null)
+            StopCoroutine(fade_coroutine);
+
+        fade_coroutine = StartCoroutine(Fade_Coroutine(true));
+    }
+
+    public IEnumerator Fade_Coroutine(bool isFadeIn)
+    {
+        SpriteRenderer sprite = GetComponent<SpriteRenderer>();
+        if (isFadeIn)
+        {
+            sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, 0);
+            if (fade.delay != 0)
+                yield return new WaitForSeconds(fade.delay);
+
+            while (sprite.color.a < 1.0f)
+            {
+                sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, sprite.color.a + (Time.deltaTime / fade.speed));
+                yield return null;
+            }
+        }
+        else
+        {
+            sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, 1);
+            //if (fadeIn.delay != 0)
+            //    yield return new WaitForSeconds(fadeIn.delay);
+
+            while (sprite.color.a > 0.0f)
+            {
+                sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, sprite.color.a - (Time.deltaTime / fade.speed * 3));
+                yield return null;
+            }
+        }
+    }
+
+    public void FadeOut()
+    {
+        if (fade_coroutine != null)
+            StopCoroutine(fade_coroutine);
+
+        fade_coroutine = StartCoroutine(Fade_Coroutine(false));
+    }
+    #endregion
+
+    #region Dissolve Object Function
+    public void DissolveIn()
+    {
+        if (dissolve_coroutine != null)
+            StopCoroutine(dissolve_coroutine);
+
+        dissolve_coroutine = StartCoroutine(Dissolve_Coroutine(true));
+    }
+
+    public IEnumerator Dissolve_Coroutine(bool isIn)
+    {       
+        if (isIn)
+        {
+            if (dissolve.delay != 0)
+                yield return new WaitForSeconds(dissolve.delay);
+
+            float dissolveLevel = 1f;
+            GetComponent<Renderer>().material.SetFloat("_Level", dissolveLevel);          
+            while (dissolveLevel > 0)
+            {
+                dissolveLevel -= Time.deltaTime / dissolve.speed;
+                GetComponent<Renderer>().material.SetFloat("_Level", dissolveLevel);
+                yield return null;
+            }
+        }
+        else
+        {
+            float dissolveLevel = 0f;
+            GetComponent<Renderer>().material.SetFloat("_Level", dissolveLevel);
+            while (dissolveLevel < 1)
+            {
+                dissolveLevel += Time.deltaTime / dissolve.speed;
+                GetComponent<Renderer>().material.SetFloat("_Level", dissolveLevel);
+                yield return null;
+            }
+        }
+    }
+
+    public void DissolveOut()
+    {
+        if (dissolve_coroutine != null)
+            StopCoroutine(dissolve_coroutine);
+
+        dissolve_coroutine = StartCoroutine(Dissolve_Coroutine(false));
     }
     #endregion
 }
