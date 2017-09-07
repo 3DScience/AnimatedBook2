@@ -92,21 +92,21 @@ public class LoginPanelController : MonoBehaviour {
 //				deactiveLoginPanel();
 //			});
 
-		DebugOnScreen.Log("Click guest login 1:: ");
+		//DebugOnScreen.Log("Click guest login 1:: ");
 
 		FirebaseDatabase.DefaultInstance.RootReference.Child("private")
 			.Child(USERSINFO).Child("guest").GetValueAsync().ContinueWith(taskguest => {
 				if (taskguest.IsFaulted)
 				{
-					DebugOnScreen.Log("tester Fuck 0:: " + GlobalVar.tester);
+					//DebugOnScreen.Log("tester Fuck 0:: " + GlobalVar.tester);
 				}
 				else if (taskguest.IsCompleted)
 				{
 					DataSnapshot snapshot = taskguest.Result;
 					GlobalVar.tester = snapshot.Child("tester").Value.ToString();
-					DebugOnScreen.Log("tester Fuck 1:: " + GlobalVar.tester);
+					//DebugOnScreen.Log("tester Fuck 1:: " + GlobalVar.tester);
 				}
-				DebugOnScreen.Log("Click guest login:: FUCKING HELL");
+				//DebugOnScreen.Log("Click guest login:: FUCKING HELL");
 			});
 		
 		deactiveLoginPanel();
