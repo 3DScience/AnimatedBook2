@@ -320,12 +320,11 @@ public class BookController_FT : MonoBehaviour {
 
     #region Book Navigate Function
     public void open()
-    {
-        CancelInvoke("ClearBGTexture");
-        CancelInvoke("DissolveBGTexture"); 
-
+    {      
         if (!isBookOpen)
         {
+            CancelInvoke("ClearBGTexture");
+            CancelInvoke("DissolveBGTexture");
             StartCoroutine(openBookCoroutine());
             topPageLeft.GetComponent<Renderer>().material = PageStartLeft;
             topPageRight.GetComponent<Renderer>().material = PageStartRight;

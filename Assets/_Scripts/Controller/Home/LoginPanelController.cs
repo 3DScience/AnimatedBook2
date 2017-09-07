@@ -9,6 +9,7 @@ using Firebase.Auth;
 using Facebook.Unity;
 using Firebase.Database;
 using UnityEngine.SceneManagement;
+using Fungus;
 
 public class LoginPanelController : MonoBehaviour {
 	public GameObject uiLogin;
@@ -22,6 +23,7 @@ public class LoginPanelController : MonoBehaviour {
     public InputField txtPassword;
     public Text txtError;
     public GameObject loadingPanel;
+    public Flowchart flowchart;
 
     void OnEnable()
     {
@@ -208,14 +210,16 @@ public class LoginPanelController : MonoBehaviour {
 
     public void deactiveLoginPanel()
     {
-		//uiLogin.SetActive (false);
-		GlobalVar.login = 1;
-		SceneManager.LoadScene(GlobalVar.MAINSCENE);
-//        loginPanel.SetActive(false);
-//		loginButton.SetActive (false);
-//        profilePanel.SetActive(true);
-//		profileButton.SetActive (true);
-//        profilePanel.GetComponent<RectTransform>().SetAsLastSibling();
+        //uiLogin.SetActive (false);
+        //GlobalVar.login = 1;
+        //SceneManager.LoadScene(GlobalVar.MAINSCENE);
+        //        loginPanel.SetActive(false);
+        //		loginButton.SetActive (false);
+        //        profilePanel.SetActive(true);
+        //		profileButton.SetActive (true);
+        //        profilePanel.GetComponent<RectTransform>().SetAsLastSibling();
+
+        flowchart.ExecuteBlock("LoginSuccess");
     }
 		
 
