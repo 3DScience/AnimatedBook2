@@ -39,13 +39,30 @@ namespace Fungus.EditorUtils
         protected Texture2D duplicateIcon;
         protected Texture2D deleteIcon;
 
+        static List<System.Type> commandTypes;
+        static List<System.Type> eventHandlerTypes;
+
+        static void CacheEventHandlerTypes()
+        {
+            eventHandlerTypes = EditorExtensions.FindDerivedTypes(typeof(EventHandler)).ToList();
+            commandTypes = EditorExtensions.FindDerivedTypes(typeof(Command)).ToList();
+        }
+
+        [UnityEditor.Callbacks.DidReloadScripts]
+        private static void OnScriptsReloaded()
+        {
+            CacheEventHandlerTypes();
+        }
+
         protected virtual void OnEnable()
         {
-            upIcon = Resources.Load("Icons/up") as Texture2D;
-            downIcon = Resources.Load("Icons/down") as Texture2D;
-            addIcon = Resources.Load("Icons/add") as Texture2D;
-            duplicateIcon = Resources.Load("Icons/duplicate") as Texture2D;
-            deleteIcon = Resources.Load("Icons/delete") as Texture2D;
+            upIcon = FungusEditorResources.Up;
+            downIcon = FungusEditorResources.Down;
+            addIcon = FungusEditorResources.Add;
+            duplicateIcon = FungusEditorResources.Duplicate;
+            deleteIcon = FungusEditorResources.Delete;
+
+            CacheEventHandlerTypes();
         }
 
         public virtual void DrawBlockName(Flowchart flowchart)
@@ -95,6 +112,20 @@ namespace Fungus.EditorUtils
             
             if (block == flowchart.SelectedBlock)
             {
+                // Custom tinting
+                SerializedProperty useCustomTintProp = serializedObject.FindProperty("useCustomTint");
+                SerializedProperty tintProp = serializedObject.FindProperty("tint");
+
+                EditorGUILayout.BeginHorizontal();
+
+                useCustomTintProp.boolValue = GUILayout.Toggle(useCustomTintProp.boolValue, " Custom Tint");
+                if (useCustomTintProp.boolValue)
+                {
+                    EditorGUILayout.PropertyField(tintProp, GUIContent.none);
+                }
+
+                EditorGUILayout.EndHorizontal();
+
                 SerializedProperty descriptionProp = serializedObject.FindProperty("description");
                 EditorGUILayout.PropertyField(descriptionProp);
 
@@ -303,8 +334,6 @@ namespace Fungus.EditorUtils
         {
             // Show available Event Handlers in a drop down list with type of current
             // event handler selected.
-            List<System.Type> eventHandlerTypes = EditorExtensions.FindDerivedTypes(typeof(EventHandler)).ToList();
-
             Block block = target as Block;
             System.Type currentType = null;
             if (block._EventHandler != null)
@@ -653,8 +682,7 @@ namespace Fungus.EditorUtils
             GenericMenu commandMenu = new GenericMenu();
             
             // Build menu list
-            List<System.Type> menuTypes = EditorExtensions.FindDerivedTypes(typeof(Command)).ToList();
-            List<KeyValuePair<System.Type, CommandInfoAttribute>> filteredAttributes = GetFilteredCommandInfoAttribute(menuTypes);
+            List<KeyValuePair<System.Type, CommandInfoAttribute>> filteredAttributes = GetFilteredCommandInfoAttribute(commandTypes);
 
             filteredAttributes.Sort( CompareCommandAttributes );
 

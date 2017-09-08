@@ -64,8 +64,20 @@ namespace Fungus
 
         protected StringSubstituter stringSubstituter;
 
+#if !FUNGUSLUA_STANDALONE
         protected ConversationManager conversationManager;
-        
+#endif
+
+        protected virtual void OnEnable()
+        {
+            StringSubstituter.RegisterHandler(this);
+        }
+
+        protected virtual void OnDisable()
+        {
+            StringSubstituter.UnregisterHandler(this);
+        }
+            
         /// <summary>
         /// Registers all listed c# types for interop with Lua.
         /// You can also register types directly in the Awake method of any 
@@ -73,8 +85,6 @@ namespace Fungus
         /// </summary>
         protected virtual void InitTypes()
         {
-            bool isFungusInstalled = (Type.GetType("Fungus.Flowchart") != null);
-
             // Always register these FungusLua utilities
             LuaEnvironment.RegisterType("Fungus.PODTypeFactory");
             LuaEnvironment.RegisterType("Fungus.FungusPrefs");
@@ -107,9 +117,7 @@ namespace Fungus
                         {
                             string typeName = entry.str.Trim();
 
-                            // Don't register fungus types if the Fungus library is not present
-                            if (!isFungusInstalled &&
-                                typeName.StartsWith("Fungus."))
+                            if (Type.GetType(typeName) == null)
                             {
                                 continue;
                             }
@@ -131,9 +139,7 @@ namespace Fungus
                         {
                             string typeName = entry.str.Trim();
 
-                            // Don't register fungus types if the Fungus library is not present
-                            if (!isFungusInstalled &&
-                                typeName.StartsWith("Fungus."))
+                            if (Type.GetType(typeName) == null)
                             {
                                 continue;
                             }
@@ -249,10 +255,11 @@ namespace Fungus
             }
 
             stringSubstituter = new StringSubstituter();
-            stringSubstituter.CacheSubstitutionHandlers();
 
+#if !FUNGUSLUA_STANDALONE
             conversationManager = new ConversationManager();
             conversationManager.PopulateCharacterCache();
+#endif
 
             if (fungusModule == FungusModuleOptions.UseGlobalVariables)
             {               
@@ -335,6 +342,9 @@ namespace Fungus
                 UnityEngine.Debug.LogError("No Lua interpreter found");
                 return false;
             }
+
+            // Remove all tabs from input
+            input.Replace("\t", "");
                 
             MoonSharp.Interpreter.Script interpreter = luaEnvironment.Interpreter;
 
@@ -445,6 +455,8 @@ namespace Fungus
             return null;
         }
 
+
+#if !FUNGUSLUA_STANDALONE
         /// <summary>
         /// Use the conversation manager to play out a conversation
         /// </summary>
@@ -456,10 +468,33 @@ namespace Fungus
         /// <summary>
         /// Sync the active say dialog with what Lua thinks the SayDialog should be
         /// </summary>
-        public void SetSayDialog(SayDialog sayDialog)
+        public virtual void SetSayDialog(SayDialog sayDialog)
         {
             SayDialog.ActiveSayDialog = sayDialog;
         }
+        /// <summary>
+        /// Returns the current say dialog.
+        /// </summary>
+        public virtual SayDialog GetSayDialog ()
+        {
+            return SayDialog.GetSayDialog();
+        }
+
+        /// <summary>
+        /// Sync the active menu dialog with what Lua things the MenuDialog should be
+        /// </summary>
+        public virtual void SetMenuDialog(MenuDialog menuDialog)
+        {
+            MenuDialog.ActiveMenuDialog = menuDialog;
+        }
+        /// <summary>
+        /// Returns the current menu dialog
+        /// </summary>
+        public virtual MenuDialog GetMenuDialog()
+        {
+            return MenuDialog.GetMenuDialog();
+        }
+#endif
 
         #endregion
 

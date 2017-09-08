@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace Fungus
 {
@@ -36,6 +37,9 @@ namespace Fungus
         [Tooltip("Adjust width of story text when Character Image is displayed (to avoid overlapping)")]
         [SerializeField] protected bool fitTextWithImage = true;
 
+        [Tooltip("Close any other open Say Dialogs when this one is active")]
+        [SerializeField] protected bool closeOtherDialogs;
+
         protected float startStoryTextWidth; 
         protected float startStoryTextInset;
 
@@ -54,7 +58,23 @@ namespace Fungus
 
         protected StringSubstituter stringSubstituter = new StringSubstituter();
 
-        protected Writer GetWriter()
+		// Cache active Say Dialogs to avoid expensive scene search
+		protected static List<SayDialog> activeSayDialogs = new List<SayDialog>();
+
+		protected virtual void Awake()
+		{
+			if (!activeSayDialogs.Contains(this))
+			{
+				activeSayDialogs.Add(this);
+			}
+		}
+
+		protected virtual void OnDestroy()
+		{
+			activeSayDialogs.Remove(this);
+		}
+			
+		protected virtual Writer GetWriter()
         {
             if (writer != null)
             {
@@ -70,7 +90,7 @@ namespace Fungus
             return writer;
         }
 
-        protected CanvasGroup GetCanvasGroup()
+        protected virtual CanvasGroup GetCanvasGroup()
         {
             if (canvasGroup != null)
             {
@@ -86,7 +106,7 @@ namespace Fungus
             return canvasGroup;
         }
 
-        protected WriterAudio GetWriterAudio()
+        protected virtual WriterAudio GetWriterAudio()
         {
             if (writerAudio != null)
             {
@@ -102,7 +122,7 @@ namespace Fungus
             return writerAudio;
         }
 
-        protected void Start()
+        protected virtual void Start()
         {
             // Dialog always starts invisible, will be faded in when writing starts
             GetCanvasGroup().alpha = 0f;
@@ -127,8 +147,6 @@ namespace Fungus
                 // Character image is hidden by default.
                 SetCharacterImage(null);
             }
-
-            stringSubstituter.CacheSubstitutionHandlers();
         }
 
         protected virtual void LateUpdate()
@@ -200,8 +218,14 @@ namespace Fungus
         {
             if (ActiveSayDialog == null)
             {
-                // Use first Say Dialog found in the scene (if any)
-                SayDialog sd = GameObject.FindObjectOfType<SayDialog>();
+				SayDialog sd = null;
+
+				// Use first active Say Dialog in the scene (if any)
+				if (activeSayDialogs.Count > 0)
+				{
+					sd = activeSayDialogs[0];
+				}
+
                 if (sd != null)
                 {
                     ActiveSayDialog = sd;
@@ -429,6 +453,17 @@ namespace Fungus
                 }
             }
 
+            if (closeOtherDialogs)
+            {
+                for (int i = 0; i < activeSayDialogs.Count; i++)
+                {
+                    var sd = activeSayDialogs[i];
+                    if (sd.gameObject != gameObject)
+                    {
+                        sd.SetActive(false);
+                    }
+                }
+            }
             gameObject.SetActive(true);
 
             this.fadeWhenDone = fadeWhenDone;
@@ -452,7 +487,7 @@ namespace Fungus
         /// <summary>
         /// Tell the Say Dialog to fade out once writing and player input have finished.
         /// </summary>
-        public virtual bool FadeWhenDone { set { fadeWhenDone = value; } }
+        public virtual bool FadeWhenDone { get {return fadeWhenDone; } set { fadeWhenDone = value; } }
 
         /// <summary>
         /// Stop the Say Dialog while its writing text.

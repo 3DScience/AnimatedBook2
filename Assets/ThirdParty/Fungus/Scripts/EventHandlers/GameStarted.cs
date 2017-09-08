@@ -18,7 +18,12 @@ namespace Fungus
         [Tooltip("Wait for a number of frames after startup before executing the Block. Can help fix startup order issues.")]
         [SerializeField] protected int waitForFrames = 1;
 
-        protected virtual IEnumerator Start()
+        protected virtual void Start()
+        {
+            StartCoroutine(GameStartCoroutine());
+        }
+
+        protected virtual IEnumerator GameStartCoroutine()
         {
             int frameCount = waitForFrames;
             while (frameCount > 0)

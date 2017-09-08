@@ -2,9 +2,6 @@
 // It is released for free under the MIT open source license (https://github.com/snozbot/fungus/blob/master/LICENSE)
 
 ﻿using UnityEngine;
-using System;
-using System.Collections;
-using System.Collections.Generic;
 
 namespace Fungus
 {
@@ -17,11 +14,43 @@ namespace Fungus
     [AddComponentMenu("")]
     public class DragExited : EventHandler
     {   
+        public class DragExitedEvent
+        {
+            public Draggable2D DraggableObject;
+            public Collider2D TargetCollider;
+            public DragExitedEvent(Draggable2D draggableObject, Collider2D targetCollider)
+            {
+                DraggableObject = draggableObject;
+                TargetCollider = targetCollider;
+            }
+        }
+
         [Tooltip("Draggable object to listen for drag events on")]
         [SerializeField] protected Draggable2D draggableObject;
 
         [Tooltip("Drag target object to listen for drag events on")]
         [SerializeField] protected Collider2D targetObject;
+
+        protected EventDispatcher eventDispatcher;
+
+        protected virtual void OnEnable()
+        {
+            eventDispatcher = FungusManager.Instance.EventDispatcher;
+
+            eventDispatcher.AddListener<DragExitedEvent>(OnDragEnteredEvent);
+        }
+
+        protected virtual void OnDisable()
+        {
+            eventDispatcher.RemoveListener<DragExitedEvent>(OnDragEnteredEvent);
+
+            eventDispatcher = null;
+        }
+
+        void OnDragEnteredEvent(DragExitedEvent evt)
+        {
+            OnDragExited(evt.DraggableObject, evt.TargetCollider);
+        }
 
         #region Public members
 

@@ -143,7 +143,7 @@ public class FishEyeScroll : MonoBehaviour {
             {
                 spot += snapSpeed;
                 ContentPanel.anchoredPosition = new Vector3(spot, ContentPanel.anchoredPosition.y);
-                yield return null;
+                yield return new WaitForSeconds(0.01f);
             }
 
             ContentPanel.anchoredPosition = new Vector3(SnapSpots[spot_index], ContentPanel.anchoredPosition.y);
@@ -156,7 +156,7 @@ public class FishEyeScroll : MonoBehaviour {
             {
                 spot -= snapSpeed;
                 ContentPanel.anchoredPosition = new Vector3(spot, ContentPanel.anchoredPosition.y);
-                yield return null;
+                yield return new WaitForSeconds(0.01f);
             }
 
             ContentPanel.anchoredPosition = new Vector3(SnapSpots[spot_index], ContentPanel.anchoredPosition.y);

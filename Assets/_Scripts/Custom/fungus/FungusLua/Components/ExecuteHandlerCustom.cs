@@ -12,10 +12,10 @@ namespace Fungus
             base.Update();
             if (calculateTouchOnNothing())
             {
-                if (IsExecuteMethodSelected(ExecuteMethod.OnTouchNothing) && ShouldExecuteOnFrame())
-                {
-                    Execute(ExecuteMethod.OnTouchNothing);
-                }
+                //if (IsExecuteMethodSelected(ExecuteMethod.OnTouchNothing) && ShouldExecuteOnFrame())
+                //{
+                //    Execute(ExecuteMethod.OnTouchNothing);
+                //}
             }
             
         }

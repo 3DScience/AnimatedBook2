@@ -84,14 +84,15 @@ public class LoginPanelController : MonoBehaviour {
 
 	public void OnLoginButtonGuestClick()
 	{
-			if (GlobalVar.DEBUG)
-				DebugOnScreen.Log ("OnLoginButtonGuestClick");
-			ProfileFirebase.getInstance ().loginAsAnnonymousUser (userInfo => {
-				DebugOnScreen.Log("OnLoginButtonGuestClick- loginAsAnnonymousUser :: " +userInfo.userID);
-				deactiveLoginPanel();
-			});
-
-	}
+        //if (GlobalVar.DEBUG)
+        //	DebugOnScreen.Log ("OnLoginButtonGuestClick");
+        //ProfileFirebase.getInstance ().loginAsAnnonymousUser (userInfo => {
+        //	DebugOnScreen.Log("OnLoginButtonGuestClick- loginAsAnnonymousUser :: " +userInfo.userID);
+        //             flowchart.ExecuteBlock("LoginSuccess");
+        //             deactiveLoginPanel();              
+        //         });
+        deactiveLoginPanel();
+    }
 
 	void HandleAction (UserInfo obj)
 	{
@@ -210,15 +211,16 @@ public class LoginPanelController : MonoBehaviour {
 
     public void deactiveLoginPanel()
     {
+        
         //uiLogin.SetActive (false);
-        //GlobalVar.login = 1;
+        GlobalVar.login = 1;
         //SceneManager.LoadScene(GlobalVar.MAINSCENE);
         //        loginPanel.SetActive(false);
         //		loginButton.SetActive (false);
         //        profilePanel.SetActive(true);
         //		profileButton.SetActive (true);
-        //        profilePanel.GetComponent<RectTransform>().SetAsLastSibling();
 
+        //profilePanel.GetComponent<RectTransform>().SetAsLastSibling();
         flowchart.ExecuteBlock("LoginSuccess");
     }
 		

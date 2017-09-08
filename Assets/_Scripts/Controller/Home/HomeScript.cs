@@ -3,39 +3,59 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using UnityEngine.Analytics;
+using Fungus;
+
 public class HomeScript : MonoBehaviour {
     public GameObject settingDialogPrefab;
 	public GameObject uiLogin;
-    private bool selectedCategory=false;
-	ArrayList listBookInfo = new ArrayList();
-	// Use this for initialization
-	void Start () {
+    public Flowchart flowchart;
 
-        if(GlobalVar.SETTING_DIALOG == null)
+    private bool selectedCategory=false;  
+	ArrayList listBookInfo = new ArrayList();
+
+    private void Awake()
+    {
+        Application.targetFrameRate = 30;
+        QualitySettings.vSyncCount = 0;
+    }
+
+    // Use this for initialization
+    void Start () {
+        //flowchart.ExecuteBlock("InitialScence");
+
+        if(!GetComponent<CurtainController>().GetFirstLoad())
+            GetComponent<CurtainController>().HideCurtain();
+
+        if (GlobalVar.SETTING_DIALOG == null)
         {
             GlobalVar.SETTING_DIALOG = GameObject.Instantiate(settingDialogPrefab);
         }
-		if (GlobalVar.login == 2) {
-			DebugOnScreen.Log("Home : " + GlobalVar.login);
-			uiLogin.SetActive(true);
-			//GameObject.Instantiate (uiLogin);
-		} else if (GlobalVar.login == 1) {
-			DebugOnScreen.Log("Home : " + GlobalVar.login);
-			//GameObject.DestroyObject (uiLogin);
-			uiLogin.SetActive(false);
-		}
+        if (GlobalVar.login == 2)
+        {
+            //DebugOnScreen.Log("Home : " + GlobalVar.login);
+            //uiLogin.SetActive(true);
+            //GameObject.Instantiate (uiLogin);
+            flowchart.ExecuteBlock("InitialScence");
+        }
+        else if (GlobalVar.login == 1)
+        {
+            //DebugOnScreen.Log("Home : " + GlobalVar.login);
+            ////GameObject.DestroyObject (uiLogin);
+            //uiLogin.SetActive(false);
+            flowchart.ExecuteBlock("StartHomeScreen");
+        }
 
         if (Debug.isDebugBuild)
             Debug.Log("HomeScript Start...");
-        loadAllCategory();
+        //loadAllCategory();
 
         Analytics.CustomEvent("Scene", new Dictionary<string, object>
-      {
-        { "user", "user1" },
-        { "scene", "Home" }
-      });
-
+          {
+            { "user", "user1" },
+            { "scene", "Home" }
+          });       
     }
+
     void loadAllCategory()
     {
         GameObject animal_book = GameObject.Find("animal_book");
@@ -90,26 +110,30 @@ public class HomeScript : MonoBehaviour {
         }
             
     }
+
     public void LoadBookSelected(string categoryName)
     {
         Category.categoryName = categoryName;
         StartCoroutine(loadSceneWithAnimation(GlobalVar.CATEGORY_SCENE));
-
     }
+
     IEnumerator loadSceneWithAnimation(string senceName)
     {
- 
-        GameObject dbook = GameObject.Find("3dbook");
-        Vector3 center = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width / 2, Screen.height / 2, dbook.transform.position.z));
-        iTween.MoveTo(dbook, iTween.Hash("position", center, "time", 0.8f));
-        Vector3 scale = dbook.transform.localScale;
-        iTween.ScaleTo(dbook, iTween.Hash("scale", scale * 2, "time", 0.8));
-        iTween.CameraFadeAdd();
-        iTween.CameraFadeTo(0.5f, 2);
-        yield return new WaitForSeconds(0.8f);
-      //  Application.LoadLevel(senceName);
-        SceneManager.LoadScene(senceName);
-        yield return null;
+
+        //GameObject dbook = GameObject.Find("3dbook");
+        //Vector3 center = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width / 2, Screen.height / 2, dbook.transform.position.z));
+        //iTween.MoveTo(dbook, iTween.Hash("position", center, "time", 0.8f));
+        //Vector3 scale = dbook.transform.localScale;
+        //iTween.ScaleTo(dbook, iTween.Hash("scale", scale * 2, "time", 0.8));
+        //iTween.CameraFadeAdd();
+        //iTween.CameraFadeTo(0.5f, 2);
+        //yield return new WaitForSeconds(0.8f);
+        //  Application.LoadLevel(senceName);
+
+        GetComponent<CurtainController>().CoverCurtain();
+        yield return new WaitForSeconds(0.5f);
+
+        SceneManager.LoadScene(senceName);      
     }
 
      
