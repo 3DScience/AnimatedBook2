@@ -40,7 +40,6 @@ namespace Fungus
         OnCollisionEnter2D      = 1 << 22,
         OnCollisionExit2D       = 1 << 23,
         OnCollisionStay2D       = 1 << 24,
-        OnTouchNothing          = 1 << 25,
     }
 
     /// <summary>

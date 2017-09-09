@@ -16,6 +16,9 @@ public class BookListController : MonoBehaviour {
     List<GameObject> listGameObjectBookAdded = new List<GameObject>();
     // Use this for initialization
     void Start () {
+        GetComponent<CurtainController>().HideCurtain();
+
+        catName = Category.categoryName;
         if (catName == null)
         {
             catName = "science";
@@ -78,9 +81,18 @@ public class BookListController : MonoBehaviour {
         BooksFireBaseDb.getInstance().reSaveBooksToLocal(()=> { loadListBook(); });
         
     }
+
     public void onHomeButtonClick()
+    {       
+        StartCoroutine(loadScene(GlobalVar.MAINSCENE));
+    }
+
+    IEnumerator loadScene(string senceName)
     {
-        SceneManager.LoadScene(GlobalVar.MAINSCENE);
+        GetComponent<CurtainController>().CoverCurtain();
+        yield return new WaitForSeconds(0.5f);
+
+        SceneManager.LoadScene(senceName);
     }
 }
 #endif

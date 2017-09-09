@@ -14,6 +14,14 @@ namespace Fungus
     [AddComponentMenu("")]
     public class DragCompleted : EventHandler
     {   
+        public class DragCompletedEvent
+        {
+            public Draggable2D DraggableObject;
+            public DragCompletedEvent(Draggable2D draggableObject)
+            {
+                DraggableObject = draggableObject;
+            }
+        }
         [Tooltip("Draggable object to listen for drag events on")]
         [SerializeField] protected Draggable2D draggableObject;
 
@@ -23,6 +31,51 @@ namespace Fungus
         // There's no way to poll if an object is touching another object, so
         // we have to listen to the callbacks and track the touching state ourselves.
         protected bool overTarget = false;
+
+        protected EventDispatcher eventDispatcher;
+
+        protected virtual void OnEnable()
+        {
+            eventDispatcher = FungusManager.Instance.EventDispatcher;
+
+            eventDispatcher.AddListener<DragCompletedEvent>(OnDragCompletedEvent);
+            eventDispatcher.AddListener<DragEntered.DragEnteredEvent>(OnDragEnteredEvent);
+            eventDispatcher.AddListener<DragExited.DragExitedEvent>(OnDragExitedEvent);
+
+            if(draggableObject != null)
+            {
+                draggableObject.RegisterHandler(this);
+            }
+        }
+
+        protected virtual void OnDisable()
+        {
+            eventDispatcher.RemoveListener<DragCompletedEvent>(OnDragCompletedEvent);
+            eventDispatcher.RemoveListener<DragEntered.DragEnteredEvent>(OnDragEnteredEvent);
+            eventDispatcher.RemoveListener<DragExited.DragExitedEvent>(OnDragExitedEvent);
+
+            if(draggableObject != null)
+            {
+                draggableObject.UnregisterHandler(this);
+            }
+
+            eventDispatcher = null;
+        }
+
+        void OnDragCompletedEvent(DragCompletedEvent evt)
+        {
+            OnDragCompleted(evt.DraggableObject);
+        }
+
+        void OnDragEnteredEvent(DragEntered.DragEnteredEvent evt)
+        {
+            OnDragEntered(evt.DraggableObject, evt.TargetCollider);
+        }
+
+        void OnDragExitedEvent(DragExited.DragExitedEvent evt)
+        {
+            OnDragExited(evt.DraggableObject, evt.TargetCollider);
+        }
 
         #region Public members
 

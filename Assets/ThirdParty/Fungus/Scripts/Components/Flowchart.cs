@@ -3,7 +3,6 @@
 
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.Serialization;
 using System;
 using System.Text;
 using System.Linq;
@@ -41,8 +40,7 @@ namespace Fungus
         [SerializeField] protected Rect scrollViewRect;
 
         [HideInInspector]
-        [FormerlySerializedAs("selectedSequence")]
-        [SerializeField] protected Block selectedBlock;
+        [SerializeField] protected List<Block> selectedBlocks = new List<Block>();
 
         [HideInInspector]
         [SerializeField] protected List<Command> selectedCommands = new List<Command>();
@@ -91,6 +89,8 @@ namespace Fungus
         #if UNITY_5_4_OR_NEWER
         protected virtual void Awake()
         {
+            CheckEventSystem();
+
             UnityEngine.SceneManagement.SceneManager.activeSceneChanged += (A, B) => {
                 LevelWasLoaded();
             };
@@ -147,6 +147,15 @@ namespace Fungus
             CheckItemIds();
             CleanupComponents();
             UpdateVersion();
+
+            StringSubstituter.RegisterHandler(this);   
+        }
+
+        protected virtual void OnDisable()
+        {
+            cachedFlowcharts.Remove(this);
+
+            StringSubstituter.UnregisterHandler(this);   
         }
 
         protected virtual void UpdateVersion()
@@ -170,11 +179,6 @@ namespace Fungus
             }
 
             version = FungusConstants.CurrentVersion;
-        }
-
-        protected virtual void OnDisable()
-        {
-            cachedFlowcharts.Remove(this);
         }
 
         protected virtual void CheckItemIds()
@@ -325,9 +329,22 @@ namespace Fungus
         public virtual Rect ScrollViewRect { get { return scrollViewRect; } set { scrollViewRect = value; } }
 
         /// <summary>
-        /// Currently selected block in the Flowchart editor.
+        /// Current actively selected block in the Flowchart editor.
         /// </summary>
-        public virtual Block SelectedBlock { get { return selectedBlock; } set { selectedBlock = value; } }
+        public virtual Block SelectedBlock
+        { 
+            get
+            {
+                return selectedBlocks.FirstOrDefault();
+            } 
+            set
+            {
+                selectedBlocks.Clear();
+                selectedBlocks.Add(value);
+            } 
+        }
+
+        public virtual List<Block> SelectedBlocks { get { return selectedBlocks; } set { selectedBlocks = value; } }
 
         /// <summary>
         /// Currently selected command in the Flowchart editor.
@@ -476,6 +493,25 @@ namespace Fungus
             if (!ExecuteBlock(block))
             {
                 Debug.LogWarning("Block " + blockName  + "failed to execute");
+            }
+        }
+            
+        /// <summary>
+        /// Stops an executing Block in the Flowchart.
+        /// </summary>
+        public virtual void StopBlock(string blockName)
+        {
+            var block = FindBlock(blockName);
+
+            if (block == null)
+            {
+                Debug.LogError("Block " + blockName  + "does not exist");
+                return;
+            }
+
+            if (block.IsExecuting())
+            {
+                block.Stop();
             }
         }
 
@@ -1041,6 +1077,25 @@ namespace Fungus
         }
 
         /// <summary>
+        /// Clears the list of selected blocks.
+        /// </summary>
+        public virtual void ClearSelectedBlocks()
+        {
+            selectedBlocks.Clear();
+        }
+
+        /// <summary>
+        /// Adds a block to the list of selected blocks.
+        /// </summary>
+        public virtual void AddSelectedBlock(Block block)
+        {
+            if (!selectedBlocks.Contains(block))
+            {
+                selectedBlocks.Add(block);
+            }
+        }
+
+        /// <summary>
         /// Reset the commands and variables in the Flowchart.
         /// </summary>
         public virtual void Reset(bool resetCommands, bool resetVariables)
@@ -1130,7 +1185,6 @@ namespace Fungus
             if (stringSubstituer == null)
             {
                 stringSubstituer = new StringSubstituter();
-                stringSubstituer.CacheSubstitutionHandlers();
             }
 
             // Use the string builder from StringSubstituter for efficiency.
