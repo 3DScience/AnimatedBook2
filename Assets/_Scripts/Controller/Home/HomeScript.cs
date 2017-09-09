@@ -30,6 +30,7 @@ public class HomeScript : MonoBehaviour {
         {
             GlobalVar.SETTING_DIALOG = GameObject.Instantiate(settingDialogPrefab);
         }
+
         if (GlobalVar.login == 2)
         {
             //DebugOnScreen.Log("Home : " + GlobalVar.login);
