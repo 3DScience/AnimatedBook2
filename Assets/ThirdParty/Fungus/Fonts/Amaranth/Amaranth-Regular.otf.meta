@@ -1,14 +1,22 @@
 fileFormatVersion: 2
 guid: bb145366ce7024469a5758b08d31802c
 TrueTypeFontImporter:
-  serializedVersion: 2
+  serializedVersion: 4
   fontSize: 16
   forceTextureCase: -2
-  characterSpacing: 1
-  characterPadding: 0
+  characterSpacing: 0
+  characterPadding: 1
   includeFontData: 1
-  use2xBehaviour: 0
-  fontNames: []
+  fontName: Amaranth
+  fontNames:
+  - Amaranth
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: b4e86052de8904394807b3f10e18a9f6, type: 3}
+  - {fileID: 12800000, guid: 30083fe2d35a6490b8f1e57e0d830527, type: 3}
+  - {fileID: 12800000, guid: 64bd3e45f7a714f16b3c213f55f17fea, type: 3}
   customCharacters: 
   fontRenderingMode: 0
+  ascentCalculationMode: 1
   userData: 
+  assetBundleName: book_resources
+  assetBundleVariant: 
