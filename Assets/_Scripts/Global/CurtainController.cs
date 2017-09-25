@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class CurtainController : MonoBehaviour {
 
-    GameObject Curtain;
-    GameObject curtain_object;
+    static GameObject Curtain;
+    static GameObject curtain_object;
 
     public bool GetFirstLoad()
     {

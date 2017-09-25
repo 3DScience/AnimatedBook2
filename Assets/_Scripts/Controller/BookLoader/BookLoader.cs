@@ -4,10 +4,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+
 public class BookLoader : MonoBehaviour {
+
     public GameObject homeButton;
     public static string assetBundleName;
     public static string[] dependenciesAbName;
+
     // Use this for initialization
     IEnumerator Start () {
 		Debug.Log("RUN PLATFORM WEBGL 1");

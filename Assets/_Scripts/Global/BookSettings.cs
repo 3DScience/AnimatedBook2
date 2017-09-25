@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class BookSettings {
 
-    private static readonly string GRAPHIC_SETTING = "PlayerSettings_Graphic";
-    private static readonly string AUTOPLAY_SETTING = "PlayerSettings_Autoplay";
-    private static readonly string AUDIO_SETTING = "PlayerSettings_Audio";
-    private static readonly string VOICE_SETTING = "PlayerSettings_Voice";
+    public static readonly string GRAPHIC_SETTING = "PlayerSettings_Graphic";
+    public static readonly string AUTOPLAY_SETTING = "PlayerSettings_Autoplay";
+    public static readonly string AUDIO_SETTING = "PlayerSettings_Audio";
+    public static readonly string VOICE_SETTING = "PlayerSettings_Voice";
 
     public static readonly int HIGH_QUALITY = 1;
     public static readonly int LOW_QUALITY = 0;

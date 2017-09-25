@@ -5,14 +5,14 @@ using UnityEngine;
 
 public class AnimatorBookObject : MonoBehaviour {
 
-    #region Classes
+    #region Serializable Classes
     [System.Serializable]
     public class MoveTo
     {
         public bool isMove = false;
         public Vector3 newPosition = new Vector3(0, 0, 0);
-        public float speed = 1.0f;
-        public float delay = 0;   
+        public float time = 1.0f;
+        public float delay = 0f;   
         
         public Vector3 originalPosition { get; set; }
     } 
@@ -22,8 +22,8 @@ public class AnimatorBookObject : MonoBehaviour {
     {
         public bool isRotate = false;
         public float angle = 90;
-        public float speed = 1.0f;
-        public float delay = 0;
+        public float time = 1.0f;
+        public float delay = 0f;
 
         public float changeAngle { get; set; }
         public Vector3 currentAngle { get; set; }
@@ -35,13 +35,15 @@ public class AnimatorBookObject : MonoBehaviour {
         [Header("Scale main setting")]       
         public bool isScale = false;
         public Vector3 newScale = new Vector3(0, 0, 0);       
-        public float speed = 1.0f;
-        public float delay = 0;
+        public float time = 1.0f;
+        public float delay = 0f;
         [Header("Object will bouncing when scale done")]
         public bool isBouncing = false;
-        public float bounceRange = 0.2f;
+        public float bounceRange = 0f;
+        public float bounceTime = 1f;
         [Header("This is need for decrease scale setting when reverse")]
-        public bool reverseDelay = true;
+        public bool reverseDelay = false;
+        public bool forceToZero = false;
         public Vector3 reverseScale = new Vector3(0, 0, 0);
 
         public bool isScaleUp { get; set; }
@@ -54,8 +56,8 @@ public class AnimatorBookObject : MonoBehaviour {
     {
         [Header("Use for sprite")]
         public bool isFade = false;
-        public float speed = 1.0f;
-        public float delay = 0;
+        public float time = 1.0f;
+        public float delay = 0f;
     }
 
     [System.Serializable]
@@ -63,12 +65,13 @@ public class AnimatorBookObject : MonoBehaviour {
     {
         [Header("Use for plane with dissolve texture")]
         public bool isDissolve = false;
-        public float speed = 1.0f;
-        public float delay = 0;
+        public float time = 1.0f;
+        public float delay = 0f;
     }
     #endregion
 
     public bool playTest = false;
+    [Header("Only use with static (outpage) content")]
     public bool flipObject = true;
 
     public MoveTo moveTo = new MoveTo();
@@ -79,9 +82,11 @@ public class AnimatorBookObject : MonoBehaviour {
 
     private Coroutine move_coroutine;
     private Coroutine rotate_coroutine;
-    private Coroutine scale_coroutine;   
+    private Coroutine scale_coroutine;
+    private Coroutine bounce_coroutine;
     private Coroutine fade_coroutine;
     private Coroutine dissolve_coroutine;
+    private int state = 0;
 
     void Start () {
         if (playTest)
@@ -92,7 +97,11 @@ public class AnimatorBookObject : MonoBehaviour {
     {
         if (playTest)
         {
-            Play();
+            if (state == 0)
+                Play();
+            else if (state == 1)
+                PlayReverse();
+
             playTest = false;
         }
     }
@@ -100,31 +109,58 @@ public class AnimatorBookObject : MonoBehaviour {
     #region Play Function
     public void Play()
     {
-        if (moveTo.isMove)
-            Move();
-        if (rotateTo.isRotate)
-            Rotate();
-        if (scaleTo.isScale)
-            Scale();
-        if (fade.isFade)
-            FadeIn();
-        if (dissolve.isDissolve)
-            DissolveIn();
+        if (state == 0) {
+            if (moveTo.isMove)
+                Move();
+            if (rotateTo.isRotate)
+                Rotate();
+            if (scaleTo.isScale)
+                Scale();
+            if (fade.isFade)
+                FadeIn();
+            if (dissolve.isDissolve)
+                DissolveIn();
+
+            state = 1;   
+        }
     }
 
     public void PlayReverse()
     {
-        if (moveTo.isMove)
-            ReverseMove();
-        if (rotateTo.isRotate)
-            ReverseRotate();
-        if (scaleTo.isScale)
-            ReverseScale();
-        if (fade.isFade)
-            FadeOut();
-        if (dissolve.isDissolve)
-            DissolveOut();
-    }   
+        if (state == 1) {
+            if (moveTo.isMove)
+                ReverseMove();
+            if (rotateTo.isRotate)
+                ReverseRotate();
+            if (scaleTo.isScale)
+                ReverseScale();
+            if (fade.isFade)
+                FadeOut();
+            if (dissolve.isDissolve)
+                DissolveOut();
+
+            state = 0;
+        }
+    }
+
+    public void StraightReverse()
+    {
+        if (state == 1)
+        {
+            if (moveTo.isMove)
+                transform.localPosition = moveTo.originalPosition;
+            if (rotateTo.isRotate)
+                ;
+            if (scaleTo.isScale)
+                transform.localScale = scaleTo.reverseScale;
+            if (fade.isFade)
+                GetComponent<SpriteRenderer>().color = new Color(GetComponent<SpriteRenderer>().color.r, GetComponent<SpriteRenderer>().color.g, GetComponent<SpriteRenderer>().color.b, 0);
+            if (dissolve.isDissolve)
+                ;
+
+            state = 0;
+        }
+    }
     #endregion
 
     #region Move Object Function
@@ -134,23 +170,23 @@ public class AnimatorBookObject : MonoBehaviour {
 
         if (move_coroutine != null)
             StopCoroutine(move_coroutine);
-        move_coroutine = StartCoroutine(Move_Coroutine(moveTo.newPosition));
+        move_coroutine = StartCoroutine(Move_Coroutine(moveTo.newPosition, true));
     }
 
-    IEnumerator Move_Coroutine(Vector3 newPosition)
+    IEnumerator Move_Coroutine(Vector3 newPosition, bool isDelay)
     {
-        if (moveTo.delay != 0)
+        if (isDelay)
             yield return new WaitForSeconds(moveTo.delay);
 
         float startTime = Time.time;
-        float endTime = startTime + moveTo.speed;
+        float endTime = startTime + moveTo.time;
 
         while (Time.time < endTime)
         {
-            float timeProgressed = (Time.time - startTime) / moveTo.speed;
+            float timeProgressed = (Time.time - startTime) / moveTo.time;
             transform.localPosition = Vector3.Lerp(transform.localPosition, newPosition, timeProgressed);
 
-            yield return new WaitForFixedUpdate();
+            yield return null;
         }
     }
 
@@ -158,7 +194,7 @@ public class AnimatorBookObject : MonoBehaviour {
     {
         if (move_coroutine != null)
             StopCoroutine(move_coroutine);
-        move_coroutine = StartCoroutine(Move_Coroutine(moveTo.originalPosition));
+        move_coroutine = StartCoroutine(Move_Coroutine(moveTo.originalPosition, false));
     }
     #endregion
 
@@ -178,89 +214,106 @@ public class AnimatorBookObject : MonoBehaviour {
     {     
         if (rotateTo.delay != 0)
             yield return new WaitForSeconds(rotateTo.delay);
-       
+
+        Vector3 toRotation = rotateTo.currentAngle + new Vector3(angle, 0, 0);
+        
         if (angle > 0)
-        {
+        {            
             while (rotateTo.changeAngle < angle)
             {
-                rotateTo.changeAngle = rotateTo.changeAngle + (1 * rotateTo.speed);
-                rotateTo.currentAngle += new Vector3((1 * rotateTo.speed), 0, 0);
-                transform.localRotation = Quaternion.Euler(rotateTo.currentAngle);
+                float angle_change_perframe = Math.Abs(angle) * Time.deltaTime;
+                rotateTo.changeAngle = rotateTo.changeAngle + (angle_change_perframe / rotateTo.time);
+                if((rotateTo.changeAngle < angle)) { 
+                    rotateTo.currentAngle += new Vector3((angle_change_perframe / rotateTo.time), 0, 0);
+                    transform.localRotation = Quaternion.Euler(rotateTo.currentAngle);
+                }
                 yield return null;
             }
-            yield break;
+            rotateTo.currentAngle = toRotation;
+            transform.localRotation = Quaternion.Euler(toRotation);            
         }
         else
-        {
+        {            
             while (rotateTo.changeAngle > angle)
             {
-                rotateTo.changeAngle = rotateTo.changeAngle - (1 * rotateTo.speed);
-                rotateTo.currentAngle -= new Vector3((1 * rotateTo.speed), 0, 0);
-                transform.localRotation = Quaternion.Euler(rotateTo.currentAngle);
+                float angle_change_perframe = Math.Abs(angle) * Time.deltaTime;
+                rotateTo.changeAngle = rotateTo.changeAngle - (angle_change_perframe / rotateTo.time);
+                if ((rotateTo.changeAngle > angle))
+                {
+                    rotateTo.currentAngle -= new Vector3((angle_change_perframe / rotateTo.time), 0, 0);
+                    transform.localRotation = Quaternion.Euler(rotateTo.currentAngle);
+                }
                 yield return null;
             }
-            yield break;
+            rotateTo.currentAngle = toRotation;
+            transform.localRotation = Quaternion.Euler(toRotation);
         }     
     }
 
     IEnumerator ReverseRotate_Coroutine(float angle)
-    {                   
+    {
+        Vector3 toRotation = rotateTo.currentAngle + new Vector3(angle, 0, 0);
+       
         if (angle > 0)
-        {
+        {           
             while (rotateTo.changeAngle < angle)
             {
                 if (Math.Abs(rotateTo.changeAngle) < 40)
                 {
-                    rotateTo.changeAngle = rotateTo.changeAngle + (0.6f * rotateTo.speed);
-                    rotateTo.currentAngle += new Vector3((0.6f * rotateTo.speed), 0, 0);
+                    float angle_change_perframe = Math.Abs(angle) * Time.deltaTime * 0.6f;
+                    rotateTo.changeAngle = rotateTo.changeAngle + (angle_change_perframe / rotateTo.time);
+                    rotateTo.currentAngle += new Vector3((angle_change_perframe / rotateTo.time), 0, 0);
                     transform.localRotation = Quaternion.Euler(rotateTo.currentAngle);
                     yield return null;
                 }
                 else
                 {
-                    rotateTo.changeAngle = rotateTo.changeAngle + (2f * rotateTo.speed);
-                    if(rotateTo.changeAngle > angle) {
-                        float x = (2f * rotateTo.speed) - (rotateTo.changeAngle - angle);
-                        rotateTo.currentAngle += new Vector3(x, 0, 0);
+                    float angle_change_perframe = Math.Abs(angle) * Time.deltaTime * 2f;
+                    rotateTo.changeAngle = rotateTo.changeAngle + (angle_change_perframe / rotateTo.time);
+                    if (rotateTo.changeAngle < angle)
+                    {
+                        rotateTo.currentAngle += new Vector3((angle_change_perframe / rotateTo.time), 0, 0);
+                        transform.localRotation = Quaternion.Euler(rotateTo.currentAngle);
                     }
-                    else { 
-                        rotateTo.currentAngle += new Vector3((2f * rotateTo.speed), 0, 0);
-                    }
-                    transform.localRotation = Quaternion.Euler(rotateTo.currentAngle);
                     yield return null;
                 }
             }
+            rotateTo.currentAngle = toRotation;
+            transform.localRotation = Quaternion.Euler(toRotation);
+            if (scale_coroutine != null)
+                StopCoroutine(scale_coroutine);
             transform.localScale = new Vector3(0, 0, 0);
-            yield break;
         }
+
         else
-        {
+        {           
             while (rotateTo.changeAngle > angle)
             {
                 if (Math.Abs(rotateTo.changeAngle) < 40)
                 {
-                    rotateTo.changeAngle = rotateTo.changeAngle - (0.6f * rotateTo.speed);
-                    rotateTo.currentAngle -= new Vector3((0.6f * rotateTo.speed), 0, 0);
+                    float angle_change_perframe = Math.Abs(angle) * Time.deltaTime * 0.6f;
+                    rotateTo.changeAngle = rotateTo.changeAngle - (angle_change_perframe / rotateTo.time);
+                    rotateTo.currentAngle -= new Vector3((angle_change_perframe / rotateTo.time), 0, 0);
                     transform.localRotation = Quaternion.Euler(rotateTo.currentAngle);
                     yield return null;
                 }
                 else
                 {
-                    rotateTo.changeAngle = rotateTo.changeAngle - (2f * rotateTo.speed);
-                    if (rotateTo.changeAngle < angle)
+                    float angle_change_perframe = Math.Abs(angle) * Time.deltaTime * 1.5f;
+                    rotateTo.changeAngle = rotateTo.changeAngle - (angle_change_perframe / rotateTo.time);
+                    if (rotateTo.changeAngle > angle)
                     {
-                        float x = (2f * rotateTo.speed) - Math.Abs(rotateTo.changeAngle - angle);
-                        rotateTo.currentAngle -= new Vector3(x, 0, 0);
+                        rotateTo.currentAngle -= new Vector3((angle_change_perframe / rotateTo.time), 0, 0);
+                        transform.localRotation = Quaternion.Euler(rotateTo.currentAngle);
                     }
-                    else { 
-                        rotateTo.currentAngle -= new Vector3((2f * rotateTo.speed), 0, 0);
-                    }
-                    transform.localRotation = Quaternion.Euler(rotateTo.currentAngle);
                     yield return null;
                 }
             }
+            rotateTo.currentAngle = toRotation;
+            transform.localRotation = Quaternion.Euler(toRotation);
+            if (scale_coroutine != null)
+                StopCoroutine(scale_coroutine);
             transform.localScale = new Vector3(0, 0, 0);
-            yield break;
         }      
     }
 
@@ -281,7 +334,7 @@ public class AnimatorBookObject : MonoBehaviour {
     {
         scaleTo.originalScale = transform.localScale;
 
-        if (transform.localScale.x >= scaleTo.newScale.x)
+        if (transform.localScale.y >= scaleTo.newScale.y)
             scaleTo.isScaleUp = false;
         else
             scaleTo.isScaleUp = true;
@@ -291,79 +344,102 @@ public class AnimatorBookObject : MonoBehaviour {
         scale_coroutine = StartCoroutine(Scale_Coroutine(scaleTo.newScale, true));
     }
 
+    public void Bounce()
+    {
+        if (scaleTo.isBouncing)
+        {
+            scaleTo.bounceState = 1;
+            if (bounce_coroutine != null) { 
+                StopCoroutine(bounce_coroutine);
+                transform.localScale = scaleTo.newScale;
+            }
+            bounce_coroutine = StartCoroutine(Bouncing(transform.localScale));
+        }
+    }
+
     IEnumerator Scale_Coroutine(Vector3 newScale, bool isDelay)
     {       
-        if (scaleTo.delay != 0 && isDelay)
+        if (isDelay)
             yield return new WaitForSeconds(scaleTo.delay);
+       
+        float endTime = Time.time + scaleTo.time;
+        float deltaX = newScale.x - transform.localScale.x;
+        float deltaY = newScale.y - transform.localScale.y;
+        float deltaZ = newScale.z - transform.localScale.z;
+        float velocityX = 0;
+        float velocityY = 0;
+        float velocityZ = 0;
 
-        if (scaleTo.isScaleUp)
-            while (transform.localScale.x < newScale.x)
-            {
-                float constant_scale = 0.1f;
-                Vector3 currentScale = transform.localScale;
-                currentScale += new Vector3(constant_scale * scaleTo.speed, constant_scale * scaleTo.speed, constant_scale * scaleTo.speed);
+        while (Time.time < endTime)
+        {
+            Vector3 currentScale = transform.localScale;
+            velocityX += deltaX * Time.deltaTime / scaleTo.time;
+            velocityY += deltaY * Time.deltaTime / scaleTo.time;
+            velocityZ += deltaZ * Time.deltaTime / scaleTo.time;
+            if(Math.Abs(velocityX) <= Math.Abs(deltaX) && Math.Abs(velocityY) <= Math.Abs(deltaY) && Math.Abs(velocityZ) <= Math.Abs(deltaZ)) { 
+                currentScale += new Vector3(deltaX * Time.deltaTime / scaleTo.time, deltaY * Time.deltaTime / scaleTo.time, deltaZ * Time.deltaTime / scaleTo.time);
                 transform.localScale = currentScale;
-                yield return null;
             }
+            yield return null;
+        }
 
-        else       
-            while (transform.localScale.x > newScale.x)
-            {
-                float constant_scale = 0.1f;
-                Vector3 currentScale = transform.localScale;
-                currentScale -= new Vector3(constant_scale * scaleTo.speed, constant_scale * scaleTo.speed, constant_scale * scaleTo.speed);
-                transform.localScale = currentScale;
-                yield return null;
-            }        
+        transform.localScale = newScale;
+
+        if (!scaleTo.isScaleUp && scaleTo.forceToZero)
+            transform.localScale = new Vector3(0, 0, 0);
 
         if (scaleTo.isScaleUp && scaleTo.isBouncing)
         {
             scaleTo.bounceState = 1;
             StartCoroutine(Bouncing(newScale));
-        }
-
-        yield break;
+        }      
     }
 
     IEnumerator Bouncing(Vector3 aroundVector)
     {       
         if (scaleTo.bounceState == 1)
         {
+            float deltaY = scaleTo.bounceRange;
+
             while (transform.localScale.y < aroundVector.y + scaleTo.bounceRange)
-            {
-                float constant_bounce = 0.1f;
+            {               
                 Vector3 currentScale = transform.localScale;
-                currentScale += new Vector3(0, constant_bounce * scaleTo.speed, 0);
+                currentScale += new Vector3(0, deltaY * Time.deltaTime / scaleTo.bounceTime, 0);
                 transform.localScale = currentScale;
                 yield return null;
             }
-            scaleTo.bounceState++;
-            yield return null;
+            scaleTo.bounceState++;          
         }
+
         if (scaleTo.bounceState == 2)
         {
+            float deltaY = scaleTo.bounceRange * 2;
+
             while (transform.localScale.y > aroundVector.y - scaleTo.bounceRange)
-            {
-                float constant_bounce = 0.1f;
+            {                
                 Vector3 currentScale = transform.localScale;
-                currentScale -= new Vector3(0, constant_bounce * scaleTo.speed, 0);
+                currentScale -= new Vector3(0, deltaY * Time.deltaTime / scaleTo.bounceTime, 0);
                 transform.localScale = currentScale;
                 yield return null;
             }
-            scaleTo.bounceState++;
-            yield return null;
+            scaleTo.bounceState++;          
         }
+
         if (scaleTo.bounceState == 3)
         {
+            float deltaY = scaleTo.bounceRange;
+
             while (transform.localScale.y < aroundVector.y)
-            {
-                float constant_bounce = 0.1f;
+            {               
                 Vector3 currentScale = transform.localScale;
-                currentScale += new Vector3(0, constant_bounce * scaleTo.speed, 0);
-                transform.localScale = currentScale;
+                if (currentScale.y < aroundVector.y)
+                {
+                    currentScale += new Vector3(0, deltaY * Time.deltaTime / scaleTo.bounceTime, 0);
+                    transform.localScale = currentScale;
+                }
                 yield return null;
             }
-            yield break;
+            transform.localScale = aroundVector;
         }
     }
 
@@ -376,7 +452,7 @@ public class AnimatorBookObject : MonoBehaviour {
 
         if (scale_coroutine != null)
             StopCoroutine(scale_coroutine);
-        scale_coroutine = StartCoroutine(Scale_Coroutine(scaleTo.reverseScale, scaleTo.reverseDelay));
+        scale_coroutine = StartCoroutine(Scale_Coroutine(scaleTo.reverseScale, scaleTo.reverseDelay));      
     }
     #endregion
 
@@ -400,19 +476,17 @@ public class AnimatorBookObject : MonoBehaviour {
 
             while (sprite.color.a < 1.0f)
             {
-                sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, sprite.color.a + (Time.deltaTime / fade.speed));
+                sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, sprite.color.a + (Time.deltaTime / fade.time));
                 yield return null;
             }
         }
         else
         {
             sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, 1);
-            //if (fadeIn.delay != 0)
-            //    yield return new WaitForSeconds(fadeIn.delay);
 
             while (sprite.color.a > 0.0f)
             {
-                sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, sprite.color.a - (Time.deltaTime / fade.speed * 3));
+                sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, sprite.color.a - (Time.deltaTime / fade.time * 3));
                 yield return null;
             }
         }
@@ -444,21 +518,24 @@ public class AnimatorBookObject : MonoBehaviour {
                 yield return new WaitForSeconds(dissolve.delay);
 
             float dissolveLevel = 1f;
-            GetComponent<Renderer>().material.SetFloat("_Level", dissolveLevel);          
+            GetComponent<Renderer>().material.SetFloat("_Level", dissolveLevel);     
+                 
             while (dissolveLevel > 0)
             {
-                dissolveLevel -= Time.deltaTime / dissolve.speed;
+                dissolveLevel -= Time.deltaTime / dissolve.time;
                 GetComponent<Renderer>().material.SetFloat("_Level", dissolveLevel);
                 yield return null;
             }
         }
+
         else
         {
             float dissolveLevel = 0f;
             GetComponent<Renderer>().material.SetFloat("_Level", dissolveLevel);
+
             while (dissolveLevel < 1)
             {
-                dissolveLevel += Time.deltaTime / dissolve.speed;
+                dissolveLevel += Time.deltaTime / dissolve.time;
                 GetComponent<Renderer>().material.SetFloat("_Level", dissolveLevel);
                 yield return null;
             }

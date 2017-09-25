@@ -23,13 +23,14 @@ public class BookListController : MonoBehaviour {
         {
             catName = "science";
         }
-        txtCategotyName.text = catName;
+        txtCategotyName.text = UppercaseFirst(catName);
         listUiRectTransform = listUi.GetComponent<RectTransform>();
         listUiScrollRect = listUi.GetComponent<ScrollRect>();
         contentGridLayout = listUi.GetComponentInChildren<GridLayoutGroup>();
         Debug.Log(listUiScrollRect);
-        float cellWidth= (listUiRectTransform.rect.width - contentGridLayout.padding.left) / 3 - (contentGridLayout.spacing.x);
-        contentGridLayout.cellSize = new Vector2(cellWidth, cellWidth*1.3f);
+        float cellWidth = (listUiRectTransform.rect.width - contentGridLayout.padding.left) / 3 - (contentGridLayout.spacing.x);
+        //contentGridLayout.cellSize = new Vector2(cellWidth, cellWidth*1.3f);
+
         loadListBook();
         Debug.Log("test book by id 100001:" + BooksFireBaseDb.getInstance().getBookInfoById("100001").name);
         //for( int i=0; i<20; i ++)
@@ -56,6 +57,7 @@ public class BookListController : MonoBehaviour {
             foreach (var book in books)
             {
                 GameObject g = GameObject.Instantiate(bookListItemPref);
+                g.SetActive(true);
                 g.transform.SetParent(contentGridLayout.transform);
                 g.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
                 listGameObjectBookAdded.Add(g);
@@ -93,6 +95,13 @@ public class BookListController : MonoBehaviour {
         yield return new WaitForSeconds(0.5f);
 
         SceneManager.LoadScene(senceName);
+    }
+
+    public string UppercaseFirst(string s)
+    {
+        char[] a = s.ToCharArray();
+        a[0] = char.ToUpper(a[0]);
+        return new string(a);
     }
 }
 #endif

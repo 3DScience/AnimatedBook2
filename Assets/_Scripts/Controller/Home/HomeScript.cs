@@ -26,10 +26,10 @@ public class HomeScript : MonoBehaviour {
         if(!GetComponent<CurtainController>().GetFirstLoad())
             GetComponent<CurtainController>().HideCurtain();
 
-        if (GlobalVar.SETTING_DIALOG == null)
-        {
-            GlobalVar.SETTING_DIALOG = GameObject.Instantiate(settingDialogPrefab);
-        }
+        //if (GlobalVar.SETTING_DIALOG == null)
+        //{
+        //    GlobalVar.SETTING_DIALOG = GameObject.Instantiate(settingDialogPrefab);
+        //}
 
         if (GlobalVar.login == 2)
         {
@@ -44,6 +44,10 @@ public class HomeScript : MonoBehaviour {
             ////GameObject.DestroyObject (uiLogin);
             //uiLogin.SetActive(false);
             flowchart.ExecuteBlock("StartHomeScreen");
+        }
+        else
+        {
+            flowchart.ExecuteBlock("InitialScence");
         }
 
         if (Debug.isDebugBuild)

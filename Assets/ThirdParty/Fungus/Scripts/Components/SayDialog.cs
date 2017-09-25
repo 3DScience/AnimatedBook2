@@ -473,8 +473,13 @@ namespace Fungus
             AudioClip soundEffectClip = null;
             if (voiceOverClip != null)
             {
-                WriterAudio writerAudio = GetWriterAudio();
-                writerAudio.OnVoiceover(voiceOverClip);
+                //SmallWorld add on/off voice feature
+                if (PlayerPrefs.GetInt(BookSettings.VOICE_SETTING) == 1)
+                {
+                    WriterAudio writerAudio = GetWriterAudio();
+                    writerAudio.OnVoiceover(voiceOverClip);
+                }
+                else Debug.Log("Voice is off by setting");
             }
             else if (speakingCharacter != null)
             {
