@@ -1,14 +1,18 @@
 ﻿using UnityEngine;
 using System.Collections;
 using AssetBundles;
+
 public class AssetBundleHelper {
+
     private static AssetBundleHelper _instance=null;
     private string assetBundleName=null;
     private MonoBehaviour context;
+
     private AssetBundleHelper()
     {
         context = GlobalVar.shareContext;
     }
+
     public static AssetBundleHelper getInstance() 
     {
         if(_instance == null)
@@ -17,6 +21,7 @@ public class AssetBundleHelper {
         }
         return _instance;
     }
+
     public IEnumerator InitializeAssetBunder(string assetBundleName)
     {
         if(this.assetBundleName!=null)
@@ -57,8 +62,7 @@ public class AssetBundleHelper {
 		if(this.assetBundleName!=null)
 		{
 			getInstance().unLoadAssetBundleManager();
-		}
-			
+		}			
 
 		AssetBundleManager.SetSourceAssetBundleURL(assetBundleUrl  );
 
@@ -80,15 +84,17 @@ public class AssetBundleHelper {
         T asset = request.GetAsset<T>();
         callback(asset);
     }
+
     public IEnumerator LoadScene(string assetBundleName, string scenseName, bool isAddtive)
     {
         this.assetBundleName = assetBundleName;
         AssetBundleManager.UnloadAssetBundle(assetBundleName);
-        AssetBundleLoadOperation request = AssetBundleManager.LoadLevelAsync(assetBundleName, scenseName, true);
+        AssetBundleLoadOperation request = AssetBundleManager.LoadLevelAsync(assetBundleName, scenseName, isAddtive);
         if (request == null)
             yield break;
         yield return context.StartCoroutine(request);
     }
+
     public void unLoadAssetBundleManager()
     {
         AssetBundleManager.UnloadAssetBundle(assetBundleName);

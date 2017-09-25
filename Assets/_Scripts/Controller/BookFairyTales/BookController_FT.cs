@@ -149,21 +149,21 @@ public class BookController_FT : MonoBehaviour {
                 }
                 else
                 {
-                    child.gameObject.GetComponent<AnimatorBookObject>().rotateTo.speed
-                        = child.gameObject.GetComponent<AnimatorBookObject>().rotateTo.speed * AnimationSpeed;
-                    child.gameObject.GetComponent<AnimatorBookObject>().scaleTo.speed
-                        = child.gameObject.GetComponent<AnimatorBookObject>().scaleTo.speed * AnimationSpeed;
+                    child.gameObject.GetComponent<AnimatorBookObject>().rotateTo.time
+                        = child.gameObject.GetComponent<AnimatorBookObject>().rotateTo.time / AnimationSpeed;
+                    child.gameObject.GetComponent<AnimatorBookObject>().scaleTo.time
+                        = child.gameObject.GetComponent<AnimatorBookObject>().scaleTo.time / AnimationSpeed;
 
                     if (child.localPosition.z >= 0) {
                         Vector3 rot = child.localRotation.eulerAngles;
-                        rot = new Vector3(-90, rot.y, rot.z);
+                        rot = new Vector3(-89, rot.y, rot.z);
                         child.localRotation = Quaternion.Euler(rot);
                         child.gameObject.GetComponent<AnimatorBookObject>().rotateTo.currentAngle = rot;                      
                     }
                     else
                     {
                         Vector3 rot = child.localRotation.eulerAngles;
-                        rot = new Vector3(90, rot.y, rot.z);
+                        rot = new Vector3(89, rot.y, rot.z);
                         child.localRotation = Quaternion.Euler(rot);
                         child.gameObject.GetComponent<AnimatorBookObject>().rotateTo.currentAngle = rot;                       
                     }
@@ -217,22 +217,22 @@ public class BookController_FT : MonoBehaviour {
 
                 if (UseAnimatorObject)
                 {
-                    child.gameObject.GetComponent<AnimatorBookObject>().rotateTo.speed
-                        = child.gameObject.GetComponent<AnimatorBookObject>().rotateTo.speed * AnimationSpeed;
-                    child.gameObject.GetComponent<AnimatorBookObject>().scaleTo.speed
-                        = child.gameObject.GetComponent<AnimatorBookObject>().scaleTo.speed * AnimationSpeed;
+                    child.gameObject.GetComponent<AnimatorBookObject>().rotateTo.time
+                        = child.gameObject.GetComponent<AnimatorBookObject>().rotateTo.time / AnimationSpeed;
+                    child.gameObject.GetComponent<AnimatorBookObject>().scaleTo.time
+                        = child.gameObject.GetComponent<AnimatorBookObject>().scaleTo.time / AnimationSpeed;
 
                     if (child.localPosition.z >= 0)
                     {
                         Vector3 rot = child.localRotation.eulerAngles;
-                        rot = new Vector3(-90, rot.y, rot.z);
+                        rot = new Vector3(-89, rot.y, rot.z);
                         child.localRotation = Quaternion.Euler(rot);
                         child.gameObject.GetComponent<AnimatorBookObject>().rotateTo.currentAngle = rot;                       
                     }
                     else
                     {
                         Vector3 rot = child.localRotation.eulerAngles;
-                        rot = new Vector3(90, rot.y, rot.z);
+                        rot = new Vector3(89, rot.y, rot.z);
                         child.localRotation = Quaternion.Euler(rot);
                         child.gameObject.GetComponent<AnimatorBookObject>().rotateTo.currentAngle = rot;
                        
@@ -285,10 +285,10 @@ public class BookController_FT : MonoBehaviour {
                 child.transform.localRotation = Quaternion.Euler(localRotation);
                 child.transform.localScale = localScale;
 
-                child.gameObject.GetComponent<AnimatorBookObject>().rotateTo.speed 
-                    = child.gameObject.GetComponent<AnimatorBookObject>().rotateTo.speed * AnimationSpeed;
-                child.gameObject.GetComponent<AnimatorBookObject>().scaleTo.speed 
-                    = child.gameObject.GetComponent<AnimatorBookObject>().scaleTo.speed * AnimationSpeed;
+                child.gameObject.GetComponent<AnimatorBookObject>().rotateTo.time 
+                    = child.gameObject.GetComponent<AnimatorBookObject>().rotateTo.time / AnimationSpeed;
+                child.gameObject.GetComponent<AnimatorBookObject>().scaleTo.time 
+                    = child.gameObject.GetComponent<AnimatorBookObject>().scaleTo.time / AnimationSpeed;
 
                 if (child.gameObject.GetComponent<AnimatorBookObject>().flipObject == true )
                 { 
@@ -829,6 +829,7 @@ public class BookController_FT : MonoBehaviour {
                 for (int i = 0; i < child.Length; i++)
                     child[i].Play();
             }
+
             do
             {
                 yield return null;
@@ -964,6 +965,7 @@ public class BookController_FT : MonoBehaviour {
                 for (int i = 0; i < child.Length; i++)
                     child[i].Play();
             }
+
             do
             {
                 yield return null;

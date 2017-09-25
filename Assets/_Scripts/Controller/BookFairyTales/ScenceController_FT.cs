@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class ScenceController_FT : MonoBehaviour {
@@ -134,6 +135,22 @@ public class ScenceController_FT : MonoBehaviour {
             }
             yield break;
         }
+    }
+
+    public void onHomeBtnClick()
+    {
+        StartCoroutine(backToCategoryScence());
+    }
+
+    IEnumerator backToCategoryScence()
+    {
+        if(GetComponent<CurtainController>()) { 
+            GetComponent<CurtainController>().CoverCurtain();
+            yield return new WaitForSeconds(0.5f);
+        }
+
+        AssetBundleHelper.getInstance().unLoadAssetBundleManager();
+        SceneManager.LoadScene(GlobalVar.CATEGORY_SCENE);
     }
 
     #region Setting Config

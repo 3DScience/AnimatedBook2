@@ -93,30 +93,21 @@ public class Book2DDetail : MonoBehaviour {
 
 		Debug.Log ("assetBundleName Book2dDetail: " + assetBundleName);
 
-		if (checkIsDownloadedAsset(assetBundleName))
-		{
-			BookLoader.assetBundleName = assetBundleName;
-			SceneManager.LoadScene(GlobalVar.BOOK_LOADER_SCENE);
-		} 
-		else
-		{
-			//GlobalVar.shareContext.shareVar.Add ("bookInfo", bookInfo);
-			SceneManager.LoadScene(GlobalVar.DOWNLOAD_ASSET_SCENE);
-		}
-	}
+        SceneManager.LoadScene(GlobalVar.DOWNLOAD_ASSET_SCENE);
+    }
 
-	private bool checkIsDownloadedAsset(string assetBundleName)
-	{
-        string platform = Application.platform.ToString();
-        if (platform == RuntimePlatform.IPhonePlayer.ToString())
-        {
-            platform = "iOS";
-        }
-        string assetDataFolder = GlobalVar.DATA_PATH + "/" + platform + "/" + assetBundleName;
-        if (File.Exists(assetDataFolder))
-        {
-            return true;
-        }
-        return false;
-	}
+ //   private bool checkIsDownloadedAsset(string assetBundleName)
+	//{
+ //       string platform = Application.platform.ToString();
+ //       if (platform == RuntimePlatform.IPhonePlayer.ToString())
+ //       {
+ //           platform = "iOS";
+ //       }
+ //       string assetDataFolder = GlobalVar.DATA_PATH + "/" + platform + "/" + assetBundleName;
+ //       if (File.Exists(assetDataFolder))
+ //       {
+ //           return true;
+ //       }
+ //       return false;
+	//}
 }

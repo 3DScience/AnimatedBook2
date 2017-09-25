@@ -10,15 +10,16 @@ public class SettingDialogController : MonoBehaviour {
 
     public GameObject dialogUi;
     public GameObject loginPanel;
-    private LoginPanelController loginPanelController;
+    //private LoginPanelController loginPanelController;
     private ProfilePanelController profilePanelController;
+
     // Use this for initialization
     void Start () {
-        dialogUi.SetActive(false);
-        DontDestroyOnLoad(gameObject.transform.parent.gameObject);
-        //ProfileFirebase.getInstance().listenLoginStateChange(stateChangedCallback);
+        //dialogUi.SetActive(false);
+        //DontDestroyOnLoad(gameObject.transform.parent.gameObject);
+        ProfileFirebase.getInstance().listenLoginStateChange(stateChangedCallback);
 
-        loginPanelController = loginPanel.GetComponent<LoginPanelController>();
+        //loginPanelController = loginPanel.GetComponent<LoginPanelController>();
         profilePanelController = GetComponent<ProfilePanelController>();
         ProfileFirebase.getInstance().getCurrentUser(gettedUser);
 
@@ -32,14 +33,14 @@ public class SettingDialogController : MonoBehaviour {
 			//GlobalVar.login = 1;
             if (GlobalVar.DEBUG)
                 DebugOnScreen.Log("SettingDialogController-CurrentUser: Email=" + user.Email + ", DisplayName=" + user.DisplayName);
-            loginPanelController.deactiveLoginPanel();
+            //loginPanelController.deactiveLoginPanel();
             profilePanelController.OnLoginStateChange(true);
         }
         else
         {
 			//GlobalVar.login = 2;
 			//DebugOnScreen.Log("SettingDialogController-CurrentUser= null " + GlobalVar.login);
-            profilePanelController.deactiveProfilePanel();
+            //profilePanelController.deactiveProfilePanel();
             //if (GlobalVar.DEBUG)
         }
     }

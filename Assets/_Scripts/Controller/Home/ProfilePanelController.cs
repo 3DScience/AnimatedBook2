@@ -35,11 +35,12 @@ public class ProfilePanelController : MonoBehaviour
             DebugOnScreen.Log("ProfilePanelController- OnLoginStateChange, logedin= "+ logedin);
         if (logedin)
         {
-			if (ProfileFirebase.getInstance().auth.CurrentUser.Email != "") {
-            	txtEmail.text = ProfileFirebase.getInstance().auth.CurrentUser.Email;
-			} else {
-				txtEmail.text = ProfileFirebase.getInstance ().auth.CurrentUser.UserId;
-			}
+			//if (ProfileFirebase.getInstance().auth.CurrentUser.Email != "") {
+   //         	txtEmail.text = ProfileFirebase.getInstance().auth.CurrentUser.Email;
+			//} else {
+			//	txtEmail.text = ProfileFirebase.getInstance ().auth.CurrentUser.UserId;
+			//}
+
 			//DebugOnScreen.Log("ProfilePanelController- OnLoginStateChange, txtEmail.text 111 = "+ txtEmail.text);
 			GlobalVar.tester = "0";
 			FirebaseDatabase.DefaultInstance.RootReference.Child ("private")
@@ -115,9 +116,9 @@ public class ProfilePanelController : MonoBehaviour
 
     public void deactiveProfilePanel()
     {
-		dialogUi.SetActive (false);
-		GlobalVar.login = 2;
-		SceneManager.LoadScene(GlobalVar.MAINSCENE);
+		//dialogUi.SetActive (false);
+		//GlobalVar.login = 2;
+		//SceneManager.LoadScene(GlobalVar.MAINSCENE);
 //        loginPanel.SetActive(true);
 //		loginButton.SetActive (true);
 //        loginPanel.GetComponent<RectTransform>().SetAsLastSibling();

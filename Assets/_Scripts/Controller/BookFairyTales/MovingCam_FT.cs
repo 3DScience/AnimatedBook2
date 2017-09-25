@@ -63,7 +63,10 @@ public class MovingCam_FT : MonoBehaviour {
     IEnumerator restartDraggable()
     {
         yield return new WaitForSeconds(2f);
-        GetComponent<DraggableCamera>().startDraggable();
+        if (isViewScence)
+        {
+            GetComponent<DraggableCamera>().startDraggable();
+        }
         speed = speed / 4;
     } 
 }
