@@ -1,0 +1,148 @@
+fileFormatVersion: 2
+guid: 1cab510065d744e4fb757d723bcfc1cd
+timeCreated: 1478498683
+licenseType: Store
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: chick
+    100002: //RootNode
+    100004: chick_
+    100006: chick_Head
+    100008: chick_HeadBone0
+    100010: chick_LArm1
+    100012: chick_LArmCollarbone
+    100014: chick_LArmPalm
+    100016: chick_LLeg1
+    100018: chick_LLeg2
+    100020: chick_LLeg3
+    100022: chick_LLegDigit01
+    100024: chick_LLegDigit11
+    100026: chick_LLegDigit21
+    100028: chick_LLegDigit31
+    100030: chick_LLegPalm
+    100032: chick_LLegPlatform
+    100034: chick_Neck
+    100036: chick_Pelvis
+    100038: chick_RArm1
+    100040: chick_RArmCollarbone
+    100042: chick_RArmPalm
+    100044: chick_Ribcage
+    100046: chick_RLeg1
+    100048: chick_RLeg2
+    100050: chick_RLeg3
+    100052: chick_RLegDigit01
+    100054: chick_RLegDigit11
+    100056: chick_RLegDigit21
+    100058: chick_RLegDigit31
+    100060: chick_RLegPalm
+    100062: chick_RLegPlatform
+    100064: chick_Spine1
+    100066: chick_Spine2
+    100068: chick_Tail01
+    100070: chick_Tail2
+    400000: chick
+    400002: //RootNode
+    400004: chick_
+    400006: chick_Head
+    400008: chick_HeadBone0
+    400010: chick_LArm1
+    400012: chick_LArmCollarbone
+    400014: chick_LArmPalm
+    400016: chick_LLeg1
+    400018: chick_LLeg2
+    400020: chick_LLeg3
+    400022: chick_LLegDigit01
+    400024: chick_LLegDigit11
+    400026: chick_LLegDigit21
+    400028: chick_LLegDigit31
+    400030: chick_LLegPalm
+    400032: chick_LLegPlatform
+    400034: chick_Neck
+    400036: chick_Pelvis
+    400038: chick_RArm1
+    400040: chick_RArmCollarbone
+    400042: chick_RArmPalm
+    400044: chick_Ribcage
+    400046: chick_RLeg1
+    400048: chick_RLeg2
+    400050: chick_RLeg3
+    400052: chick_RLegDigit01
+    400054: chick_RLegDigit11
+    400056: chick_RLegDigit21
+    400058: chick_RLegDigit31
+    400060: chick_RLegPalm
+    400062: chick_RLegPlatform
+    400064: chick_Spine1
+    400066: chick_Spine2
+    400068: chick_Tail01
+    400070: chick_Tail2
+    4300000: chick
+    7400000: Take 001
+    9500000: //RootNode
+    11100000: //RootNode
+    13700000: chick
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleRotations: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 3
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

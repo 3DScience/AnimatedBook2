@@ -6,7 +6,7 @@ using UnityEngine.Analytics;
 using Fungus;
 
 public class HomeScript : MonoBehaviour {
-    public GameObject settingDialogPrefab;
+    
 	public GameObject uiLogin;
     public Flowchart flowchart;
 

@@ -6,10 +6,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using Firebase;
 using Firebase.Auth;
+
 public class SettingDialogController : MonoBehaviour {
 
-    public GameObject dialogUi;
-    public GameObject loginPanel;
     //private LoginPanelController loginPanelController;
     private ProfilePanelController profilePanelController;
 
@@ -44,15 +43,10 @@ public class SettingDialogController : MonoBehaviour {
             //if (GlobalVar.DEBUG)
         }
     }
+
     public void OnSettingClick()
     {
-        Debug.Log("OnMouseDown");
-        if ( !dialogUi.activeSelf)
-        {
-            dialogUi.SetActive(true);
-        }
-
-
+        
     }
 
     void stateChangedCallback(bool logined)
@@ -69,14 +63,14 @@ public class SettingDialogController : MonoBehaviour {
 
     public void onCloseButtonClick()
     {
-        dialogUi.SetActive(false);
+        
     }
 
     public void OnEdgeClick()
     {
-        Debug.Log("OnEdgeClick");
-        dialogUi.SetActive(false);
+       
     }
+
     public void ontest()
     {
         Debug.Log("ontest");

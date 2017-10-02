@@ -12,13 +12,14 @@ using UnityEngine.SceneManagement;
 
 public class ProfilePanelController : MonoBehaviour
 {
-	public GameObject dialogUi;
-    public GameObject loginPanel;
-    public GameObject profilePanel;
-	public GameObject loginButton;
-	public GameObject profileButton;
-    public Text txtEmail;
-    public Text txtCash;
+	//public GameObject dialogUi;
+ //   public GameObject loginPanel;
+ //   public GameObject profilePanel;
+	//public GameObject loginButton;
+	//public GameObject profileButton;
+ //   public Text txtEmail;
+ //   public Text txtCash;
+
     // Use this for initialization
     void Start()
     {
@@ -29,6 +30,7 @@ public class ProfilePanelController : MonoBehaviour
         //loadUser();
         ProfileFirebase.getInstance().listenLoginStateChange(OnLoginStateChange);
     }
+
     public void OnLoginStateChange(bool logedin)
     {
         if (GlobalVar.DEBUG)
@@ -55,9 +57,11 @@ public class ProfilePanelController : MonoBehaviour
 						GlobalVar.tester = snapshot_.Child("tester").Value.ToString();
 					}
 				});
-        }else
+        }
+
+        else
         {
-            txtEmail.text = "";
+            //txtEmail.text = "";
         }
     }
 
@@ -103,7 +107,8 @@ public class ProfilePanelController : MonoBehaviour
 				FB.LogOut();
 			}
 
-            deactiveProfilePanel();
+            GlobalVar.login = 2;
+            SceneManager.LoadScene(GlobalVar.MAINSCENE);
         }
         catch (System.Exception ex)
         {
@@ -115,15 +120,9 @@ public class ProfilePanelController : MonoBehaviour
 
 
     public void deactiveProfilePanel()
-    {
-		//dialogUi.SetActive (false);
+    {		
 		//GlobalVar.login = 2;
 		//SceneManager.LoadScene(GlobalVar.MAINSCENE);
-//        loginPanel.SetActive(true);
-//		loginButton.SetActive (true);
-//        loginPanel.GetComponent<RectTransform>().SetAsLastSibling();
-//        profilePanel.SetActive(false);
-//		profileButton.SetActive (false);
     }
 }
 #endif

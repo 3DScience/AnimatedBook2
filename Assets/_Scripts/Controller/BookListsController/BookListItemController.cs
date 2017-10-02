@@ -4,12 +4,15 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System;
 
 public class BookListItemController : MonoBehaviour {
+
     public int idx{ get; set; }
     public BookInfo bookInfo;
     public Text txtName;
     public RawImage  img;
+    public Action<BookInfo> onclickCallBack;
 
 	private string thumbnailPath = "";
 	private WWW imgLink;
@@ -52,7 +55,9 @@ public class BookListItemController : MonoBehaviour {
         if (GlobalVar.shareContext.shareVar.ContainsKey("bookInfo"))
             GlobalVar.shareContext.shareVar.Remove("bookInfo");
         GlobalVar.shareContext.shareVar.Add("bookInfo",bookInfo);
-        SceneManager.LoadScene(GlobalVar.BOOK2DDETAIL_SCENE);
+        //SceneManager.LoadScene(GlobalVar.BOOK2DDETAIL_SCENE);
+
+        onclickCallBack(bookInfo);
     }
 
 
@@ -78,8 +83,8 @@ public class BookListItemController : MonoBehaviour {
 			} else {
 				//DebugOnScreen.Log("BookListItemController :: loadImg :: Exists");
 				byte[] fileData = File.ReadAllBytes(thumbnailPath);
-				Texture2D tex = new Texture2D(2, 2);
-				tex.LoadImage(fileData);
+				Texture2D tex = new Texture2D(2, 2, TextureFormat.RGB24, false);
+                tex.LoadImage(fileData);
 				img.texture = tex;
 
 				loadLocal = true;

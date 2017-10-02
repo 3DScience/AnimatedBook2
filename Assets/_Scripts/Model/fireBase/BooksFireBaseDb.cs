@@ -30,7 +30,7 @@ public class BooksFireBaseDb {
     }
     public void saveBooksToLocal(System.Action callbackWhenDone)
     {
-        GlobalVar.shareContext.loadingIndicator.SetActive(true);
+        //GlobalVar.shareContext.loadingIndicator.SetActive(true);
 
 		//dbf.Child("public").Child("vn").Child("books").OrderByChild("status").EqualTo(GlobalVar.tester).GetValueAsync().ContinueWith(task => { 
 		dbf.Child("public").Child("vn").Child("books").GetValueAsync().ContinueWith(task => {
