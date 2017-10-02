@@ -12,8 +12,8 @@ public class ShareContext : MonoBehaviour {
     }
     public void initLoadingIndicator()
     {
-        loadingIndicator = Instantiate(Resources.Load("Prefabs/loaddingIndicator", typeof(GameObject)), gameObject.transform) as GameObject;
-        loadingIndicator.SetActive(false);
+        //loadingIndicator = Instantiate(Resources.Load("Prefabs/loaddingIndicator", typeof(GameObject)), gameObject.transform) as GameObject;
+        //loadingIndicator.SetActive(false);
     }
 
 

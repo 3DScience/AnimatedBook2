@@ -1,0 +1,154 @@
+fileFormatVersion: 2
+guid: 6db40974eb99ce1458cc719517ef0514
+timeCreated: 1478500843
+licenseType: Store
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: sheepbaby
+    100002: //RootNode
+    100004: sheepbaby_
+    100006: sheepbaby_Head
+    100008: sheepbaby_L_Ear1
+    100010: sheepbaby_LLeg1
+    100012: sheepbaby_LLeg1 1
+    100014: sheepbaby_LLeg2
+    100016: sheepbaby_LLeg2 1
+    100018: sheepbaby_LLeg3
+    100020: sheepbaby_LLegAnkle
+    100022: sheepbaby_LLegAnkle 1
+    100024: sheepbaby_LLegCollarbone
+    100026: sheepbaby_LLegDigit11
+    100028: sheepbaby_LLegDigit11 1
+    100030: sheepbaby_LLegPlatform
+    100032: sheepbaby_LLegPlatform 1
+    100034: sheepbaby_Neck
+    100036: sheepbaby_Pelvis
+    100038: sheepbaby_RArm1
+    100040: sheepbaby_Ribcage
+    100042: sheepbaby_RLeg1
+    100044: sheepbaby_RLeg1 1
+    100046: sheepbaby_RLeg2
+    100048: sheepbaby_RLeg2 1
+    100050: sheepbaby_RLeg3
+    100052: sheepbaby_RLegAnkle
+    100054: sheepbaby_RLegAnkle 1
+    100056: sheepbaby_RLegCollarbone
+    100058: sheepbaby_RLegDigit11
+    100060: sheepbaby_RLegDigit11 1
+    100062: sheepbaby_RLegPlatform
+    100064: sheepbaby_RLegPlatform 1
+    100066: sheepbaby_Spine1
+    100068: sheepbaby_Spine2
+    100070: sheepbaby_Spine3
+    100072: sheepbaby_Tail1
+    100074: sheepbaby_Tail2
+    100076: sheepbaby_Tail3
+    400000: sheepbaby
+    400002: //RootNode
+    400004: sheepbaby_
+    400006: sheepbaby_Head
+    400008: sheepbaby_L_Ear1
+    400010: sheepbaby_LLeg1
+    400012: sheepbaby_LLeg1 1
+    400014: sheepbaby_LLeg2
+    400016: sheepbaby_LLeg2 1
+    400018: sheepbaby_LLeg3
+    400020: sheepbaby_LLegAnkle
+    400022: sheepbaby_LLegAnkle 1
+    400024: sheepbaby_LLegCollarbone
+    400026: sheepbaby_LLegDigit11
+    400028: sheepbaby_LLegDigit11 1
+    400030: sheepbaby_LLegPlatform
+    400032: sheepbaby_LLegPlatform 1
+    400034: sheepbaby_Neck
+    400036: sheepbaby_Pelvis
+    400038: sheepbaby_RArm1
+    400040: sheepbaby_Ribcage
+    400042: sheepbaby_RLeg1
+    400044: sheepbaby_RLeg1 1
+    400046: sheepbaby_RLeg2
+    400048: sheepbaby_RLeg2 1
+    400050: sheepbaby_RLeg3
+    400052: sheepbaby_RLegAnkle
+    400054: sheepbaby_RLegAnkle 1
+    400056: sheepbaby_RLegCollarbone
+    400058: sheepbaby_RLegDigit11
+    400060: sheepbaby_RLegDigit11 1
+    400062: sheepbaby_RLegPlatform
+    400064: sheepbaby_RLegPlatform 1
+    400066: sheepbaby_Spine1
+    400068: sheepbaby_Spine2
+    400070: sheepbaby_Spine3
+    400072: sheepbaby_Tail1
+    400074: sheepbaby_Tail2
+    400076: sheepbaby_Tail3
+    4300000: sheepbaby
+    7400000: Take 001
+    9500000: //RootNode
+    11100000: //RootNode
+    13700000: sheepbaby
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleRotations: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 3
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

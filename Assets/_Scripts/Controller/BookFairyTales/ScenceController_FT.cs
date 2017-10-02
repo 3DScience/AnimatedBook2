@@ -11,7 +11,7 @@ public class ScenceController_FT : MonoBehaviour {
     public Camera Camera;
     public Light Light;
     public GameObject Book;
-    public GameObject Table;
+    //public GameObject Table;
     public GameObject UIPanel;
     public AudioSource BackgroundMusic;
     public Flowchart FungusFlowchart;
@@ -212,7 +212,7 @@ public class ScenceController_FT : MonoBehaviour {
     {
         GraphicLowToggle.isOn = false;
         GraphicHighToggle.isOn = true;       
-        Table.GetComponent<Renderer>().material.shader = Shader.Find(HIGH_GRAPHIC_SHADER);
+        //Table.GetComponent<Renderer>().material.shader = Shader.Find(HIGH_GRAPHIC_SHADER);
         Transform shadow = Book.transform.Find("BookShadow");
         if (shadow != null)
             shadow.gameObject.SetActive(true);
@@ -224,7 +224,7 @@ public class ScenceController_FT : MonoBehaviour {
     {
         GraphicHighToggle.isOn = false;
         GraphicLowToggle.isOn = true;
-        Table.GetComponent<Renderer>().material.shader = Shader.Find(LOW_GRAPHIC_SHADER);
+        //Table.GetComponent<Renderer>().material.shader = Shader.Find(LOW_GRAPHIC_SHADER);
         Transform shadow =  Book.transform.Find("BookShadow");
         if (shadow != null)
             shadow.gameObject.SetActive(true);
