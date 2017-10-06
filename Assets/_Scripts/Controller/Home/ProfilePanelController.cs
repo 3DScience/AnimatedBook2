@@ -28,41 +28,41 @@ public class ProfilePanelController : MonoBehaviour
             Debug.Log("Onstart");
         }
         //loadUser();
-        ProfileFirebase.getInstance().listenLoginStateChange(OnLoginStateChange);
+//        ProfileFirebase.getInstance().listenLoginStateChange(OnLoginStateChange);
     }
 
     public void OnLoginStateChange(bool logedin)
     {
-        if (GlobalVar.DEBUG)
-            DebugOnScreen.Log("ProfilePanelController- OnLoginStateChange, logedin= "+ logedin);
-        if (logedin)
-        {
-			//if (ProfileFirebase.getInstance().auth.CurrentUser.Email != "") {
-   //         	txtEmail.text = ProfileFirebase.getInstance().auth.CurrentUser.Email;
-			//} else {
-			//	txtEmail.text = ProfileFirebase.getInstance ().auth.CurrentUser.UserId;
-			//}
-
-			//DebugOnScreen.Log("ProfilePanelController- OnLoginStateChange, txtEmail.text 111 = "+ txtEmail.text);
-			GlobalVar.tester = "0";
-			FirebaseDatabase.DefaultInstance.RootReference.Child ("private")
-				.Child ("userInfo").Child (ProfileFirebase.getInstance ().auth.CurrentUser.UserId).GetValueAsync ().ContinueWith (taskValue => {
-					if (taskValue.IsFaulted)
-					{
-						// nothing
-					}
-					else if (taskValue.IsCompleted)
-					{
-						DataSnapshot snapshot_ = taskValue.Result;
-						GlobalVar.tester = snapshot_.Child("tester").Value.ToString();
-					}
-				});
-        }
-
-        else
-        {
-            //txtEmail.text = "";
-        }
+//        if (GlobalVar.DEBUG)
+//            DebugOnScreen.Log("ProfilePanelController- OnLoginStateChange, logedin= "+ logedin);
+//        if (logedin)
+//        {
+//			//if (ProfileFirebase.getInstance().auth.CurrentUser.Email != "") {
+//   //         	txtEmail.text = ProfileFirebase.getInstance().auth.CurrentUser.Email;
+//			//} else {
+//			//	txtEmail.text = ProfileFirebase.getInstance ().auth.CurrentUser.UserId;
+//			//}
+//
+//			//DebugOnScreen.Log("ProfilePanelController- OnLoginStateChange, txtEmail.text 111 = "+ txtEmail.text);
+//			GlobalVar.tester = "0";
+//			FirebaseDatabase.DefaultInstance.RootReference.Child ("private")
+//				.Child ("userInfo").Child (ProfileFirebase.getInstance ().auth.CurrentUser.UserId).GetValueAsync ().ContinueWith (taskValue => {
+//					if (taskValue.IsFaulted)
+//					{
+//						// nothing
+//					}
+//					else if (taskValue.IsCompleted)
+//					{
+//						DataSnapshot snapshot_ = taskValue.Result;
+//						GlobalVar.tester = snapshot_.Child("tester").Value.ToString();
+//					}
+//				});
+//        }
+//
+//        else
+//        {
+//            //txtEmail.text = "";
+//        }
     }
 
 //	public static void AuthStateChanged(object sender, System.EventArgs eventArgs) {
@@ -90,34 +90,7 @@ public class ProfilePanelController : MonoBehaviour
     {
        // txtEmail.text = ProfileFirebase.getInstance().user.Email;
     }
-
-
-    public void OnLogOutButtonClick()
-    {
-        if (GlobalVar.DEBUG)
-            DebugOnScreen.Log("ProfilePanelController- OnLogOutButtonClick");
-        try
-        {
-			LoginPanelController.islogin = false;
-
-            ProfileFirebase.getInstance().auth.SignOut();
-
-			DebugOnScreen.Log("ProfilePanelController- OnLogOutButtonClick islogin: " + LoginPanelController.islogin);
-			if (LoginPanelController.islogin == true) {
-				FB.LogOut();
-			}
-
-            GlobalVar.login = 2;
-            SceneManager.LoadScene(GlobalVar.MAINSCENE);
-        }
-        catch (System.Exception ex)
-        {
-            DebugOnScreen.Log(ex.Message);
-            DebugOnScreen.Log(ex.ToString());
-        }
-
-    }
-
+		
 
     public void deactiveProfilePanel()
     {		

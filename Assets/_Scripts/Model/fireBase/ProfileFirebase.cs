@@ -16,6 +16,9 @@ public class ProfileFirebase {
     private FirebaseUser user;
     private System.Action<bool> stateChangedCallback;
 
+	private const string USERSINFO = "userInfo";
+	private const string PERMISSION_PRIVATE = "private";
+
     private ProfileFirebase()
     {
 
@@ -72,6 +75,7 @@ public class ProfileFirebase {
         //}
         if (GlobalVar.DEBUG)
             DebugOnScreen.Log("ProfileFirebase- AuthStateChanged -auth.CurrentUser= " + auth.CurrentUser);
+		
         if (auth.CurrentUser != user)
         {
             if (user == null && auth.CurrentUser != null)
@@ -162,10 +166,12 @@ public class ProfileFirebase {
 			callbackWhenDone(null);
 		}
 	}
+
 	public void createNewUser (UserInfo user) {
 		FirebaseDatabase.DefaultInstance
-			.GetReference(USERS)
+			.GetReference(PERMISSION_PRIVATE)
 			.Child(user.userID)
+			.Child(USERSINFO)
 			.SetRawJsonValueAsync(JsonUtility.ToJson(user));
 	}
 }

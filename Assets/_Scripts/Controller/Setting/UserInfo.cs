@@ -8,6 +8,7 @@ public class UserInfo {
 	public string username;
 	public string email;
 	public string firebase_token;
+	public string tester;
 	public bool isAnnonymous;
 
 	public UserInfo() {
@@ -16,5 +17,6 @@ public class UserInfo {
 		username 		= "";
 		email 			= "";
 		firebase_token 	= "";
+		tester = "";
 	} 
 }

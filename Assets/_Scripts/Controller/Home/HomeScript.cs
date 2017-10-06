@@ -4,142 +4,141 @@ using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using UnityEngine.Analytics;
 using Fungus;
+using Firebase;
+using Firebase.Auth;
+using Firebase.Database;
 
 public class HomeScript : MonoBehaviour {
-    
-	public GameObject uiLogin;
-    public Flowchart flowchart;
 
-    private bool selectedCategory=false;  
+	public GameObject uiLogin;
+	public Flowchart flowchart;
+
+	private bool selectedCategory=false;  
 	ArrayList listBookInfo = new ArrayList();
 
-    private void Awake()
-    {
-        Application.targetFrameRate = 30;
-        QualitySettings.vSyncCount = 0;
-    }
+	private LoginPanelController loginPanelController;
 
-    // Use this for initialization
-    void Start () {
-        //flowchart.ExecuteBlock("InitialScence");
+	private void Awake()
+	{
+		Application.targetFrameRate = 30;
+		QualitySettings.vSyncCount = 0;
+	}
 
-        if(!GetComponent<CurtainController>().GetFirstLoad())
-            GetComponent<CurtainController>().HideCurtain();
+	// Use this for initialization
+	void Start () {
+		//flowchart.ExecuteBlock("InitialScence");
 
-        //if (GlobalVar.SETTING_DIALOG == null)
-        //{
-        //    GlobalVar.SETTING_DIALOG = GameObject.Instantiate(settingDialogPrefab);
-        //}
+		if(!GetComponent<CurtainController>().GetFirstLoad()) {
+			GetComponent<CurtainController>().HideCurtain();	
+		}
 
-        if (GlobalVar.login == 2)
-        {
-            //DebugOnScreen.Log("Home : " + GlobalVar.login);
-            //uiLogin.SetActive(true);
-            //GameObject.Instantiate (uiLogin);
-            flowchart.ExecuteBlock("InitialScence");
-        }
-        else if (GlobalVar.login == 1)
-        {
-            //DebugOnScreen.Log("Home : " + GlobalVar.login);
-            ////GameObject.DestroyObject (uiLogin);
-            //uiLogin.SetActive(false);
-            flowchart.ExecuteBlock("StartHomeScreen");
-        }
-        else
-        {
-            flowchart.ExecuteBlock("InitialScence");
-        }
+		ProfileFirebase.getInstance().getCurrentUser(getCurrentUserCallback);
+	}
 
-        if (Debug.isDebugBuild)
-            Debug.Log("HomeScript Start...");
-        //loadAllCategory();
+	void getCurrentUserCallback()
+	{
+		FirebaseUser user;
+		user = ProfileFirebase.getInstance().auth.CurrentUser;
+		if (user != null)
+		{
+			GlobalVar.login = 1;
 
-        Analytics.CustomEvent("Scene", new Dictionary<string, object>
-          {
-            { "user", "user1" },
-            { "scene", "Home" }
-          });       
-    }
+			//DebugOnScreen.Log("getCurrentUserCallback-CurrentUser: Email=" + user.Email + ", DisplayName=" + user.DisplayName + ", userID=" + user.UserId);
 
-    void loadAllCategory()
-    {
-        GameObject animal_book = GameObject.Find("animal_book");
-        CategoryInfo cat1 = animal_book.AddComponent<CategoryInfo>();
-        cat1.index = 0;
+			if (user.Email != LoginPanelController.GUEST_DEFAULT_EMAIL) {
+				//DebugOnScreen.Log ("getCurrentUserCallback-CurrentUser: is not default user");
+
+				loginPanelController = uiLogin.GetComponentInChildren<LoginPanelController> ();
+				//DebugOnScreen.Log ("getCurrentUserCallback-CurrentUser: get LoginPanelController script successfully");
+				loginPanelController.checkInfoUsers(user);
+			}
+
+			flowchart.ExecuteBlock("StartHomeScreen");
+
+			//DebugOnScreen.Log ("getCurrentUserCallback :: Show Home screen");
+		}
+		else
+		{
+			//DebugOnScreen.Log ("getCurrentUserCallback :: no user logged in");
+			GlobalVar.login = 2;
+			flowchart.ExecuteBlock("InitialScence");
+			//DebugOnScreen.Log("getCurrentUserCallback :: Show Login form);
+		}
+	}
+
+	void loadAllCategory()
+	{
+		GameObject animal_book = GameObject.Find("animal_book");
+		CategoryInfo cat1 = animal_book.AddComponent<CategoryInfo>();
+		cat1.index = 0;
 		cat1.categoryName = "nature";
-        cat1.callback = OnSelectedBook;
-        listBookInfo.Add(cat1);
+		cat1.callback = OnSelectedBook;
+		listBookInfo.Add(cat1);
 
-        GameObject fairy_book = GameObject.Find("fairy_book");
-        CategoryInfo cat2 = fairy_book.AddComponent<CategoryInfo>();
-        cat2.index = 1;
+		GameObject fairy_book = GameObject.Find("fairy_book");
+		CategoryInfo cat2 = fairy_book.AddComponent<CategoryInfo>();
+		cat2.index = 1;
 		cat2.categoryName = "fairytale";
-        cat2.callback = OnSelectedBook;
-        listBookInfo.Add(cat2);
+		cat2.callback = OnSelectedBook;
+		listBookInfo.Add(cat2);
 
-        GameObject science_book = GameObject.Find("science_book");
-        CategoryInfo cat3 = science_book.AddComponent<CategoryInfo>();
-        cat3.index = 2;
+		GameObject science_book = GameObject.Find("science_book");
+		CategoryInfo cat3 = science_book.AddComponent<CategoryInfo>();
+		cat3.index = 2;
 		cat3.categoryName = "science";
-        cat3.callback = OnSelectedBook;
-        listBookInfo.Add(cat3);
+		cat3.callback = OnSelectedBook;
+		listBookInfo.Add(cat3);
 
-        GameObject fiction_book = GameObject.Find("fiction_book");
-        CategoryInfo cat4 = fiction_book.AddComponent<CategoryInfo>();
-        cat4.index = 3;
+		GameObject fiction_book = GameObject.Find("fiction_book");
+		CategoryInfo cat4 = fiction_book.AddComponent<CategoryInfo>();
+		cat4.index = 3;
 		cat4.categoryName = "fiction";
-        cat4.callback = OnSelectedBook;
-        listBookInfo.Add(cat4);
+		cat4.callback = OnSelectedBook;
+		listBookInfo.Add(cat4);
 
-    }
-    void OnSelectedBook(int index)
-    {
-        if (Debug.isDebugBuild)
-            Debug.Log("OnSelectedBook "+ index);
-        if (selectedCategory)
-            return;
+	}
+	void OnSelectedBook(int index)
+	{
+		if (Debug.isDebugBuild) {
+			Debug.Log("OnSelectedBook :: index = "+ index);
+		}
 
-        selectedCategory = true;
-        CategoryInfo categoryInfo = (CategoryInfo)listBookInfo[index];
-#if !UNITY_WEBGL
+		if (selectedCategory) {
+			return;
+		}
+
+		selectedCategory = true;
+		CategoryInfo categoryInfo = (CategoryInfo)listBookInfo[index];
+		#if !UNITY_WEBGL
 		BookListController.catName = categoryInfo.categoryName;
-        LoadBookSelected(categoryInfo.categoryName);
-#endif
-    }
-    public void ButtonClick(string assetBundleName)
-    {
-        Debug.Log("ButtonClick1 ");
-        if (Debug.isDebugBuild)
-        {
+		LoadBookSelected(categoryInfo.categoryName);
+		#endif
+	}
 
-        }
-            
-    }
+	public void ButtonClick(string assetBundleName)
+	{
+		//Debug.Log("ButtonClick1 ");
+		if (Debug.isDebugBuild)
+		{
 
-    public void LoadBookSelected(string categoryName)
-    {
-        Category.categoryName = categoryName;
-        StartCoroutine(loadSceneWithAnimation(GlobalVar.CATEGORY_SCENE));
-    }
+		}
 
-    IEnumerator loadSceneWithAnimation(string senceName)
-    {
+	}
 
-        //GameObject dbook = GameObject.Find("3dbook");
-        //Vector3 center = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width / 2, Screen.height / 2, dbook.transform.position.z));
-        //iTween.MoveTo(dbook, iTween.Hash("position", center, "time", 0.8f));
-        //Vector3 scale = dbook.transform.localScale;
-        //iTween.ScaleTo(dbook, iTween.Hash("scale", scale * 2, "time", 0.8));
-        //iTween.CameraFadeAdd();
-        //iTween.CameraFadeTo(0.5f, 2);
-        //yield return new WaitForSeconds(0.8f);
-        //  Application.LoadLevel(senceName);
+	public void LoadBookSelected(string categoryName)
+	{
+		Category.categoryName = categoryName;
+		StartCoroutine(loadSceneWithAnimation(GlobalVar.CATEGORY_SCENE));
+	}
 
-        GetComponent<CurtainController>().CoverCurtain();
-        yield return new WaitForSeconds(0.5f);
+	IEnumerator loadSceneWithAnimation(string senceName)
+	{
+		//slide a black curtain while transfering scene
+		GetComponent<CurtainController>().CoverCurtain();
+		yield return new WaitForSeconds(0.5f);
 
-        SceneManager.LoadScene(senceName);      
-    }
+		SceneManager.LoadScene(senceName);      
+	}
 
-     
+
 }
